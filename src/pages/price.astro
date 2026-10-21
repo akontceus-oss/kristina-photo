@@ -1,47 +1,48 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
 import { graph, breadcrumbs } from '../lib/schema';
 import { SITE } from '../config/site';
+import { getMainServices, formatPrice } from '../lib/services';
 
-// Цены и пакеты. Заменить на реальные — разметка schema.org обновится сама.
-const packages = [
-  { name: 'Мини-съёмка', price: 0, duration: '30 минут', items: ['15 фото в обработке', 'Одна локация', 'Готовность до 7 дней'] },
-  { name: 'Стандарт', price: 0, duration: '1 час', items: ['35 фото в обработке', 'Помощь с образом и локацией', 'Готовность до 10 дней'] },
-  { name: 'Расширенная', price: 0, duration: '2 часа', items: ['70 фото в обработке', '2 локации или смена образа', 'Готовность до 14 дней'] },
-];
-const fmt = (n: number) => (n ? `${n.toLocaleString('ru-RU')} ₽` : 'по запросу');
+// Цены берутся из файлов видов съёмок (src/content/services/*.md, поле price).
+const services = await getMainServices();
 
 const schema = graph(
   breadcrumbs([{ name: 'Прайс', path: '/price/' }]),
   {
     '@type': 'OfferCatalog',
-    name: 'Стоимость фотосессий',
+    name: 'Стоимость фотосъёмки',
     url: `${SITE.url}/price/`,
-    itemListElement: packages.map((p) => ({
+    itemListElement: services.map((s) => ({
       '@type': 'Offer',
-      name: p.name,
-      description: `${p.duration}: ${p.items.join(', ')}`,
-      ...(p.price ? { price: p.price, priceCurrency: 'RUB' } : {}),
-      itemOffered: { '@type': 'Service', name: `Фотосессия «${p.name}»`, provider: { '@id': `${SITE.url}/#business` } },
+      name: s.data.title,
+      url: `${SITE.url}/${s.id}/`,
+      priceCurrency: 'RUB',
+      ...(s.data.price
+        ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: s.data.price, priceCurrency: 'RUB', unitText: s.data.priceUnit } }
+        : {}),
+      itemOffered: { '@type': 'Service', name: s.data.h1, provider: { '@id': `${SITE.url}/#business` } },
     })),
   },
 );
 ---
 <BaseLayout
-  title="Цены на фотосессию в Москве и Рязани — прайс фотографа Кристины"
-  description="Стоимость фотосессии у фотографа Кристины в Москве и Рязани: пакеты, длительность, количество фото и сроки готовности."
+  title="Цены на съёмку меню и предметную съёмку в Москве и Рязани — фотограф Кристина"
+  description={`Стоимость фотосъёмки: ${services.map((s) => `${s.data.title.toLowerCase()} — ${formatPrice(s.data.price)}/${s.data.priceUnit}`).join(', ')}. Москва и Рязань.`}
   schema={schema}
 >
   <div class="page">
     <h1>Прайс</h1>
-    <p class="lead">Стоимость фотосессий в Москве и Рязани. Выезд в другие города — по договорённости.</p>
+    <p class="lead">Стоимость фотосъёмки в Москве и Рязани. Минимальное время, выезд в другие города и срочная обработка — по договорённости.</p>
     <div class="packages">
-      {packages.map((p) => (
+      {services.map((s) => (
         <article class="pkg">
-          <h2>{p.name}</h2>
-          <p class="pkg__price">{fmt(p.price)}</p>
-          <p class="pkg__dur">{p.duration}</p>
-          <ul>{p.items.map((it) => <li>{it}</li>)}</ul>
+          <h2><a href={`/${s.id}/`}>{s.data.title}</a></h2>
+          <p class="pkg__price">{formatPrice(s.data.price)}</p>
+          {s.data.price && <p class="pkg__dur">за {s.data.priceUnit}</p>}
+          {s.data.includes.length > 0 && <ul>{s.data.includes.map((it) => <li>{it}</li>)}</ul>}
+          {s.data.priceNote && <p class="pkg__note">{s.data.priceNote}</p>}
         </article>
       ))}
     </div>
@@ -49,21 +50,23 @@ const schema = graph(
       <h2>Дополнительно</h2>
       <ul>
         <li>Аренда студии — оплачивается отдельно по тарифу студии</li>
-        <li>Визажист и стилист — по запросу</li>
-        <li>Дополнительные фото в обработке — [цена] ₽ за кадр</li>
+        <li>Фуд-стилист, реквизит под задачу — по запросу</li>
+        <li>Оплата: самозанятая, выдаю чек — удобно для юрлиц и ИП</li>
       </ul>
-      <p><a class="btn" href="/contacts/">Записаться</a></p>
     </section>
+    <ContactForm />
   </div>
 </BaseLayout>
 
 <style>
   .lead { color: var(--muted); max-width: 640px; }
-  .packages { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 2.5rem; }
+  .packages { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 2.5rem; }
   .pkg { border: 1px solid var(--line); padding: 2rem 1.75rem; }
   .pkg h2 { margin: 0 0 .75rem; font-size: 1.6rem; }
-  .pkg__price { font-size: 1.25rem; margin: 0; }
+  .pkg h2 a { text-decoration: none; }
+  .pkg__price { font-size: 1.4rem; margin: 0; }
   .pkg__dur { color: var(--muted); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin: .25rem 0 1rem; }
-  .pkg ul { padding-left: 1.1rem; margin: 0; color: #444; }
-  .extra { margin-top: 3rem; }
+  .pkg ul { padding-left: 1.1rem; margin: 0; color: #444; font-size: 14px; }
+  .pkg__note { color: var(--muted); font-size: 13px; }
+  .extra { margin: 3rem 0; }
 </style>

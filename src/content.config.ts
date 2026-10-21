@@ -8,41 +8,43 @@ const photo = (image: any) =>
     alt: z.string(),
   });
 
-/** Разделы портфолио: один .md файл = одна страница /portfolio/<slug>/ */
-const portfolio = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/portfolio' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      seoTitle: z.string(),
-      description: z.string(),
-      order: z.number().default(0),
-      cover: photo(image),
-      photos: z.array(photo(image)),
-    }),
-});
-
 /**
- * Посадочные страницы под ключевые запросы (Москва / Рязань).
- * Один .md файл = одна страница /<slug>/. Slug берётся из имени файла.
+ * Виды съёмок. Один .md файл = одна SEO-страница /<имя-файла>/.
+ *
+ * Основная страница вида съёмки (без поля city) попадает в меню «Портфолио»,
+ * на главную и в прайс. Страница с полем city — это посадочная под город
+ * (например, predmetnaya-semka-ryazan.md), она в меню не выводится,
+ * но попадает в sitemap и ссылается на основную через parent.
  */
-const landings = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/landings' }),
+const services = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/services' }),
   schema: ({ image }) =>
     z.object({
-      city: z.enum(['Москва', 'Рязань']),
-      keyword: z.string(),
-      seoTitle: z.string().max(70),
-      description: z.string().max(170),
+      /** Короткое название для меню, карточек и прайса. */
+      title: z.string(),
       h1: z.string(),
+      seoTitle: z.string().max(80),
+      description: z.string().max(180),
+      /** Подзаголовок под H1 и текст карточки на главной. */
       lead: z.string(),
-      hero: photo(image),
-      /** Раздел портфолио, из которого показать фото на странице. */
-      portfolio: z.string().optional(),
-      priceFrom: z.number().optional(),
+      order: z.number().default(100),
+      /** Цена в рублях за единицу (priceUnit). */
+      price: z.number().optional(),
+      priceUnit: z.string().default('час'),
+      priceNote: z.string().optional(),
+      /** Что входит — список на странице и в прайсе. */
+      includes: z.array(z.string()).default([]),
+      cover: photo(image),
+      photos: z.array(photo(image)).default([]),
       faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
+      /** Для посадочных под город. */
+      city: z.enum(['Москва', 'Рязань']).optional(),
+      /** Slug основной страницы вида съёмки (для посадочных). */
+      parent: z.string().optional(),
+      /** Показывать в меню/на главной/в прайсе (по умолчанию — да, если нет city). */
+      listed: z.boolean().optional(),
       draft: z.boolean().default(false),
     }),
 });
 
-export const collections = { portfolio, landings };
+export const collections = { services };

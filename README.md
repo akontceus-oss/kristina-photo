@@ -23,17 +23,23 @@ npm run build    # готовый сайт в папке dist/
 | Домен, телефон, почта, мессенджеры, ID Метрики/GA, коды Вебмастера, данные для политики | `src/config/site.ts` |
 | Пункты меню и разделы портфолио | `src/config/nav.ts` |
 | Фото слайдера на главной | `src/assets/slides/` — все файлы по алфавиту |
-| Разделы портфолио (текст, фото, SEO) | `src/content/portfolio/*.md` + фото в `src/assets/portfolio/<раздел>/` |
+| Виды съёмок: отдельная SEO-страница, фото, цена, FAQ (автоматически попадают в меню, на главную, в прайс и форму) | `src/content/services/*.md` + фото в `src/assets/services/<вид>/` |
 | Об авторе / Прайс / Инфо / Контакты | `src/pages/about.astro`, `price.astro`, `info.astro`, `contacts.astro` |
-| Посадочные страницы под ключевые запросы | `src/content/landings/*.md` |
+| Форма заявки (почта/Telegram) | `public/send.php`, настройки — `form-config.example.php` |
 | Политика конфиденциальности и согласие | `src/pages/privacy.astro`, `src/pages/soglasie.astro` |
 
-### Новая посадочная страница под ключевой запрос
+### Новый вид съёмки или посадочная под город
 
-Скопируйте `src/content/landings/fotograf-moskva.md`, назовите файл будущим адресом
-(например `semejnyj-fotograf-ryazan.md` → `https://домен/semejnyj-fotograf-ryazan/`),
-заполните `seoTitle`, `description`, `h1`, текст и FAQ, уберите `draft: true`.
-Страница сама попадёт в sitemap, получит разметку schema.org (Service, FAQ, хлебные крошки).
+Скопируйте любой файл из `src/content/services/`, назовите его будущим адресом
+(например `fud-semka-moskva.md` → `https://домен/fud-semka-moskva/`), заполните `seoTitle`, `description`, `h1`, цену, текст и FAQ.
+Для посадочной под город добавьте `city: Рязань` и `parent: <основной вид>` — тогда она не попадёт в меню,
+а фото возьмёт у основного вида. Страница сама попадёт в sitemap и получит разметку schema.org (Service, Offer, FAQ, хлебные крошки).
+Пример — `predmetnaya-semka-ryazan.md` (пока скрыт `draft: true`).
+
+### Форма заявки на TimeWeb
+
+Скопируйте `form-config.example.php` на хостинг в папку **над** `public_html` под именем `form-config.php`
+и впишите почту (и при желании Telegram-бота). Без этого файла форма покажет ошибку и предложит написать в мессенджер.
 
 ## SEO, что уже сделано
 

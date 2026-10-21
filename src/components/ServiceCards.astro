@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import { getMainServices, formatPrice } from '../lib/services';
+const services = await getMainServices();
+---
+<ul class="cards">
+  {services.map((s) => (
+    <li>
+      <a href={`/${s.id}/`}>
+        <Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[500, 800]} sizes="(max-width: 700px) 100vw, 33vw" />
+        <h3>{s.data.title}</h3>
+        <p class="price">{formatPrice(s.data.price)}{s.data.price ? ` / ${s.data.priceUnit}` : ''}</p>
+        <p class="lead">{s.data.lead}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px 24px; }
+  .cards a { display: block; text-decoration: none; }
+  .cards :global(img) { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; transition: opacity .3s; }
+  .cards a:hover :global(img) { opacity: .9; }
+  h3 { margin: 16px 0 4px; font-size: 1.5rem; }
+  .price { margin: 0; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .lead { margin: 8px 0 0; color: #555; font-size: 14px; }
+</style>

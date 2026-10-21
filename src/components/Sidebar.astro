@@ -2,9 +2,17 @@
 import { NAV } from '../config/nav';
 import { SITE } from '../config/site';
 import Socials from './Socials.astro';
+import { getMainServices } from '../lib/services';
 
+const services = await getMainServices();
+const nav = NAV.map((item) =>
+  item.href === '/portfolio/' ? { ...item, children: services.map((s) => ({ label: s.data.title, href: `/${s.id}/` })) } : item,
+);
 const path = Astro.url.pathname;
-const isActive = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+const isActive = (href: string): boolean =>
+  path === href ||
+  (href !== '/' && path.startsWith(href)) ||
+  nav.some((i) => i.href === href && i.children?.some((c) => path.startsWith(c.href)));
 ---
 <header class="sidebar" data-sidebar>
   <div class="sidebar__top">
@@ -16,7 +24,7 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
 
   <nav id="site-nav" class="nav" aria-label="Основное меню">
     <ul>
-      {NAV.map((item) => (
+      {nav.map((item) => (
         <li class:list={{ 'has-sub': item.children, open: item.children && isActive(item.href) }}>
           {item.children ? (
             <>

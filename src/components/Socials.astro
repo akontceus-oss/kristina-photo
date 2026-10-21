@@ -16,13 +16,15 @@ const items = Object.entries(SITE.socials).filter(([, url]) => url);
     <li>
       <a href={url} target="_blank" rel="noopener" aria-label={titles[key]} title={titles[key]}>
         <Icon name={key} size={size} />
-        {labels && <span>{titles[key]}</span>}
+        {labels && <span>{titles[key]}{key === 'instagram' && '*'}</span>}
       </a>
     </li>
   ))}
 </ul>
+{labels && SITE.socials.instagram && <p class="meta-note">* Instagram принадлежит компании Meta, признанной экстремистской организацией и запрещённой в РФ.</p>}
 
 <style>
+  .meta-note { font-size: 11px; color: var(--muted); margin: 14px 0 0; line-height: 1.5; }
   .socials { list-style: none; margin: 0; padding: 0; display: flex; gap: 14px; flex-wrap: wrap; }
   .socials a { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); text-decoration: none; transition: color .2s; }
   .socials a:hover { color: var(--text); }

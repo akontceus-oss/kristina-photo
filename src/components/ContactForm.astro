@@ -1,0 +1,105 @@
+---
+import { SITE } from '../config/site';
+import { getMainServices } from '../lib/services';
+
+interface Props { title?: string; selected?: string }
+const { title = 'Оставить заявку', selected } = Astro.props;
+const services = await getMainServices();
+---
+<section class="form-block" id="zayavka">
+  <h2>{title}</h2>
+  <p class="form-block__lead">Опишите задачу — я свяжусь с вами в течение дня, уточню детали и рассчитаю стоимость.</p>
+  <form class="form" method="post" action={SITE.form.endpoint} data-form novalidate>
+    <div class="row">
+      <label>
+        <span>Имя</span>
+        <input name="name" type="text" autocomplete="name" required maxlength="100" />
+      </label>
+      <label>
+        <span>Телефон или ник в мессенджере</span>
+        <input name="contact" type="text" autocomplete="tel" required maxlength="100" />
+      </label>
+    </div>
+    <label>
+      <span>Вид съёмки</span>
+      <select name="service">
+        {services.map((s) => <option value={s.data.title} selected={s.id === selected}>{s.data.title}</option>)}
+        <option value="Другое">Другое</option>
+      </select>
+    </label>
+    <label>
+      <span>Комментарий</span>
+      <textarea name="message" rows="4" maxlength="2000" placeholder="Что нужно снять, сколько позиций, желаемые даты"></textarea>
+    </label>
+    <!-- Защита от спама: поле скрыто от людей, боты его заполняют -->
+    <label class="hp" aria-hidden="true">Сайт<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+    <input type="hidden" name="ts" value="" data-ts />
+    <input type="hidden" name="page" value={Astro.url.pathname} />
+    <label class="consent">
+      <input type="checkbox" name="consent" value="1" required />
+      <span>Я даю <a href="/soglasie/" target="_blank">согласие на обработку персональных данных</a> и ознакомлен(а) с <a href="/privacy/" target="_blank">политикой конфиденциальности</a></span>
+    </label>
+    <button type="submit" class="btn btn--dark">Отправить заявку</button>
+    <p class="form__status" role="status" aria-live="polite" data-status></p>
+  </form>
+</section>
+
+<style>
+  .form-block { max-width: 760px; }
+  .form-block__lead { color: var(--muted); margin-top: 0; }
+  .form { display: grid; gap: 18px; margin-top: 1.5rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  label span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type='text'], select, textarea {
+    width: 100%; border: 0; border-bottom: 1px solid #cfcac4; padding: 10px 0; font: inherit; font-size: 15px;
+    background: transparent; color: var(--text); border-radius: 0;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--text); }
+  textarea { resize: vertical; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #555; }
+  .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: #555; margin: 0; }
+  .consent input { margin-top: 3px; accent-color: var(--text); }
+  .consent a { color: var(--accent); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .btn--dark { background: var(--text); color: #fff; cursor: pointer; font-family: inherit; justify-self: start; }
+  .btn--dark:hover { background: #000; }
+  .btn--dark[disabled] { opacity: .5; cursor: wait; }
+  .form__status { margin: 0; font-size: 14px; min-height: 1.5em; }
+  .form__status.ok { color: #3c6e3c; }
+  .form__status.err { color: #a33; }
+  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
+    const ts = form.querySelector<HTMLInputElement>('[data-ts]')!;
+    ts.value = String(Date.now());
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const say = (text: string, ok: boolean) => { status.textContent = text; status.className = 'form__status ' + (ok ? 'ok' : 'err'); };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        const consent = form.querySelector<HTMLInputElement>('[name=consent]')!;
+        say(consent.checked ? 'Заполните имя и контакт для связи.' : 'Нужно согласие на обработку персональных данных.', false);
+        return;
+      }
+      btn.disabled = true;
+      say('Отправляю…', true);
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || 'error');
+        form.reset();
+        ts.value = String(Date.now());
+        say('Спасибо! Заявка отправлена, я скоро свяжусь с вами.', true);
+        (window as any).ym?.((window as any).__ymId, 'reachGoal', 'form_sent');
+      } catch {
+        say('Не получилось отправить. Напишите мне в мессенджер — ссылки на странице «Контакты».', false);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+</script>
