@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Gallery from '../../components/Gallery.astro';
+import { graph, breadcrumbs } from '../../lib/schema';
+import { SITE } from '../../config/site';
+
+export async function getStaticPaths() {
+  const sections = await getCollection('portfolio');
+  return sections.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const path = `/portfolio/${entry.id}/`;
+const schema = graph(
+  breadcrumbs([{ name: 'Портфолио', path: '/portfolio/' }, { name: entry.data.title, path }]),
+  {
+    '@type': 'ImageGallery',
+    name: entry.data.seoTitle,
+    url: new URL(path, SITE.url).href,
+    author: { '@id': `${SITE.url}/#person` },
+  },
+);
+---
+<BaseLayout title={entry.data.seoTitle} description={entry.data.description} image={entry.data.cover.src} schema={schema}>
+  <div class="page page--wide">
+    <h1>{entry.data.title}</h1>
+    <div class="prose intro"><Content /></div>
+    <Gallery photos={entry.data.photos} />
+    <p class="cta"><a class="btn" href="/contacts/">Записаться на съёмку</a></p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page--wide { max-width: 1400px; }
+  .intro { max-width: 720px; margin-bottom: 2.5rem; }
+  .cta { margin-top: 3rem; }
+</style>

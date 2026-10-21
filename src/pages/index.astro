@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Slideshow from '../components/Slideshow.astro';
+import { SITE } from '../config/site';
+import { graph, personSchema, businessSchema, websiteSchema } from '../lib/schema';
+
+// Все файлы из src/assets/slides попадают в слайдер по алфавиту.
+// Чтобы поменять фото — просто замените/добавьте файлы в эту папку.
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/slides/*.{jpg,jpeg,png,webp}', { eager: true });
+const slides = Object.keys(files).sort().map((k, i) => ({
+  src: files[k].default,
+  alt: `Фотограф Кристина, Москва и Рязань — работа ${i + 1}`,
+}));
+---
+<BaseLayout bare schema={graph(websiteSchema(), businessSchema(), personSchema())}>
+  <Slideshow slides={slides}>
+    <div class="hero-caption">
+      <h1>{SITE.role} {SITE.fullName}</h1>
+      <p>Москва · Рязань</p>
+    </div>
+  </Slideshow>
+</BaseLayout>
+
+<style>
+  .hero-caption {
+    position: absolute; left: 40px; bottom: 36px; z-index: 2; color: #fff;
+    text-shadow: 0 1px 8px rgba(0,0,0,.35); pointer-events: none;
+  }
+  .hero-caption h1 {
+    font: 500 12px/1.4 var(--font-sans); letter-spacing: .22em; text-transform: uppercase; margin: 0 0 4px;
+  }
+  .hero-caption p { margin: 0; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .85; }
+  @media (max-width: 900px) { .hero-caption { left: 20px; bottom: 24px; } }
+</style>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { graph, breadcrumbs, faqSchema } from '../lib/schema';
+
+const faq = [
+  { q: 'Как забронировать дату?', a: 'Напишите мне в любой мессенджер, обсудим формат и дату. Бронь фиксируется предоплатой [X] ₽.' },
+  { q: 'Что надеть на фотосессию?', a: 'Однотонную одежду спокойных оттенков без крупных логотипов. Перед съёмкой я пришлю подробную памятку.' },
+  { q: 'Сколько ждать готовые фото?', a: 'От 7 до 14 дней в зависимости от пакета. Фото передаю в онлайн-галерее.' },
+  { q: 'Можно ли перенести съёмку?', a: 'Да, если предупредить не позднее чем за [N] дней. При плохой погоде переносим бесплатно.' },
+  { q: 'Вы снимаете в других городах?', a: 'Основные города — Москва и Рязань. Выезд в другие города возможен, стоимость обсуждается отдельно.' },
+];
+---
+<BaseLayout
+  title="Как проходит фотосессия — ответы на вопросы | фотограф Кристина"
+  description="Как подготовиться к фотосессии, бронирование, сроки готовности фото и условия переноса. Фотограф Кристина, Москва и Рязань."
+  schema={graph(breadcrumbs([{ name: 'Инфо', path: '/info/' }]), faqSchema(faq))}
+>
+  <div class="page page--narrow">
+    <h1>Инфо</h1>
+    <div class="faq">
+      {faq.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .faq details { border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
+  .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.35rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-family: var(--font-sans); color: var(--muted); transition: transform .2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq p { color: #444; margin: .75rem 0 0; }
+</style>

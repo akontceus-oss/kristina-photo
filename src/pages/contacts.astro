@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Socials from '../components/Socials.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../config/site';
+import { graph, breadcrumbs, businessSchema } from '../lib/schema';
+
+const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
+---
+<BaseLayout
+  title="Контакты фотографа Кристины — запись на фотосессию в Москве и Рязани"
+  description="Связаться с фотографом Кристиной: телефон, Telegram, WhatsApp, ВКонтакте. Запись на фотосессию в Москве и Рязани."
+  schema={graph(breadcrumbs([{ name: 'Контакты', path: '/contacts/' }]), { '@type': 'ContactPage', about: businessSchema() })}
+>
+  <div class="page page--narrow">
+    <h1>Контакты</h1>
+    <p class="lead">Напишите удобным способом — отвечу, расскажу о свободных датах и помогу выбрать формат съёмки.</p>
+    <ul class="direct">
+      {SITE.contacts.phone && <li><a href={`tel:${tel}`}><Icon name="phone" /> {SITE.contacts.phone}</a></li>}
+      {SITE.contacts.email && <li><a href={`mailto:${SITE.contacts.email}`}><Icon name="email" /> {SITE.contacts.email}</a></li>}
+    </ul>
+    <h2>Мессенджеры и соцсети</h2>
+    <Socials labels size={22} />
+    <p class="cities">Снимаю в Москве и Рязани.</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .lead { color: var(--muted); }
+  .direct { list-style: none; padding: 0; margin: 2rem 0; }
+  .direct li { margin-bottom: 12px; }
+  .direct a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-size: 18px; }
+  .cities { margin-top: 2.5rem; color: var(--muted); }
+</style>

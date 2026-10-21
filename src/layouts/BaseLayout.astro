@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+import Seo, { type SeoProps } from '../components/Seo.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+
+interface Props extends SeoProps {
+  /** Без подвала — для главной со слайдером на весь экран. */
+  bare?: boolean;
+}
+const { bare = false, ...seo } = Astro.props;
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo {...seo} />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Перейти к содержимому</a>
+    <div class="shell">
+      <Sidebar />
+      <main id="content" class="main">
+        <slot />
+        {!bare && <Footer />}
+      </main>
+    </div>
+    <CookieBanner />
+  </body>
+</html>

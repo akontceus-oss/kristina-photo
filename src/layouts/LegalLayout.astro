@@ -1,0 +1,16 @@
+---
+import BaseLayout from './BaseLayout.astro';
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  <div class="page page--narrow legal prose">
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .legal :global(h1) { font-size: 2.2rem; }
+  .legal :global(h2) { font-size: 1.4rem; margin-top: 2rem; }
+  .legal :global(p), .legal :global(li) { font-size: 14px; }
+</style>

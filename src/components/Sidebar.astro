@@ -1,0 +1,108 @@
+---
+import { NAV } from '../config/nav';
+import { SITE } from '../config/site';
+import Socials from './Socials.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+<header class="sidebar" data-sidebar>
+  <div class="sidebar__top">
+    <a class="logo" href="/" aria-label={`${SITE.name} — на главную`}>{SITE.name}</a>
+    <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav" data-burger>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav id="site-nav" class="nav" aria-label="Основное меню">
+    <ul>
+      {NAV.map((item) => (
+        <li class:list={{ 'has-sub': item.children, open: item.children && isActive(item.href) }}>
+          {item.children ? (
+            <>
+              <button type="button" class:list={['nav__link', { active: isActive(item.href) }]} aria-expanded={isActive(item.href) ? 'true' : 'false'} data-sub-toggle>
+                {item.label}<span class="plus" aria-hidden="true">+</span>
+              </button>
+              <ul class="sub">
+                <li><a href={item.href} class:list={{ active: path === item.href }}>Все работы</a></li>
+                {item.children.map((c) => <li><a href={c.href} class:list={{ active: isActive(c.href) }}>{c.label}</a></li>)}
+              </ul>
+            </>
+          ) : (
+            <a href={item.href} class:list={['nav__link', { active: isActive(item.href) }]}>{item.label}</a>
+          )}
+        </li>
+      ))}
+    </ul>
+    <div class="sidebar__bottom">
+      <Socials />
+      <p class="sidebar__meta">{SITE.role} · {SITE.cities.join(' · ')}</p>
+      <p class="sidebar__meta"><a href="/privacy/">Политика конфиденциальности</a></p>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .sidebar {
+    position: fixed; inset: 0 auto 0 0; width: var(--sidebar-w); background: var(--bg);
+    padding: 64px 48px 40px; display: flex; flex-direction: column; z-index: 50; overflow-y: auto;
+  }
+  .sidebar__top { display: flex; align-items: center; justify-content: space-between; }
+  .logo {
+    font-family: var(--font-serif); font-size: 34px; letter-spacing: .14em; text-decoration: none; color: var(--text);
+  }
+  .nav { flex: 1; display: flex; flex-direction: column; margin-top: 110px; }
+  .nav ul { list-style: none; margin: 0; padding: 0; }
+  .nav > ul > li { margin-bottom: 14px; }
+  .nav__link, .sub a {
+    font: 500 12px/1.4 var(--font-sans); letter-spacing: .16em; text-transform: uppercase;
+    color: #555; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer;
+    transition: color .2s;
+  }
+  .nav__link:hover, .nav__link.active, .sub a:hover, .sub a.active { color: #000; }
+  .plus { display: inline-block; margin-left: 6px; transition: transform .25s; }
+  .has-sub.open .plus { transform: rotate(45deg); }
+  .sub { max-height: 0; overflow: hidden; visibility: hidden; padding-left: 14px !important; transition: max-height .35s ease, margin .35s ease, visibility .35s; }
+  .has-sub.open .sub { max-height: 400px; margin-top: 10px; visibility: visible; }
+  .sub a { font-size: 11px; color: var(--muted); display: inline-block; padding: 4px 0; }
+  .sidebar__bottom { margin-top: auto; }
+  .sidebar__meta a { color: inherit; }
+  .sidebar__meta { margin: 14px 0 0; font-size: 11px; color: var(--muted); letter-spacing: .08em; }
+  .burger { display: none; }
+
+  @media (max-width: 900px) {
+    .sidebar { inset: 0 0 auto 0; width: 100%; padding: 0 20px; height: 64px; border-bottom: 1px solid var(--line); }
+    .sidebar__top { height: 64px; }
+    .logo { font-size: 26px; }
+    .burger { display: flex; flex-direction: column; gap: 6px; background: none; border: 0; padding: 10px; cursor: pointer; }
+    .burger span { width: 24px; height: 1px; background: var(--text); transition: transform .25s, opacity .25s; }
+    .sidebar.menu-open .burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .sidebar.menu-open .burger span:nth-child(2) { opacity: 0; }
+    .sidebar.menu-open .burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav {
+      position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: var(--bg);
+      margin: 0; padding: 40px 24px; display: none; overflow-y: auto;
+    }
+    .sidebar.menu-open .nav { display: flex; }
+    .nav > ul > li { margin-bottom: 22px; }
+    .nav__link { font-size: 14px; }
+    .sub a { font-size: 13px; padding: 6px 0; }
+  }
+</style>
+
+<script>
+  const sidebar = document.querySelector<HTMLElement>('[data-sidebar]');
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  burger?.addEventListener('click', () => {
+    const open = sidebar!.classList.toggle('menu-open');
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-sub-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const open = btn.parentElement!.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+</script>

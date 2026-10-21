@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { graph, breadcrumbs } from '../../lib/schema';
+
+const sections = (await getCollection('portfolio')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout
+  title="Портфолио фотографа Кристины — Москва и Рязань"
+  description="Портфолио фотографа Кристины: семейные, портретные, детские фотосессии и love story в Москве и Рязани."
+  schema={graph(breadcrumbs([{ name: 'Портфолио', path: '/portfolio/' }]))}
+>
+  <div class="page">
+    <h1>Портфолио</h1>
+    <ul class="cards">
+      {sections.map((s) => (
+        <li>
+          <a href={`/portfolio/${s.id}/`}>
+            <Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[500, 800]} sizes="(max-width: 700px) 100vw, 50vw" />
+            <span>{s.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .cards a { display: block; text-decoration: none; }
+  .cards :global(img) { aspect-ratio: 4 / 5; object-fit: cover; width: 100%; transition: opacity .3s; }
+  .cards a:hover :global(img) { opacity: .9; }
+  .cards span { display: block; margin-top: 12px; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+</style>

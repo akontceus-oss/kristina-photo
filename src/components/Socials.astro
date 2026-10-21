@@ -1,0 +1,31 @@
+---
+import { SITE } from '../config/site';
+import Icon from './Icon.astro';
+
+interface Props { size?: number; labels?: boolean; class?: string }
+const { size = 18, labels = false, class: cls = '' } = Astro.props;
+
+const titles: Record<string, string> = {
+  telegram: 'Telegram', whatsapp: 'WhatsApp', max: 'MAX', vk: 'ВКонтакте',
+  instagram: 'Instagram', pinterest: 'Pinterest', youtube: 'YouTube',
+};
+const items = Object.entries(SITE.socials).filter(([, url]) => url);
+---
+<ul class:list={['socials', cls, { 'socials--labels': labels }]}>
+  {items.map(([key, url]) => (
+    <li>
+      <a href={url} target="_blank" rel="noopener" aria-label={titles[key]} title={titles[key]}>
+        <Icon name={key} size={size} />
+        {labels && <span>{titles[key]}</span>}
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .socials { list-style: none; margin: 0; padding: 0; display: flex; gap: 14px; flex-wrap: wrap; }
+  .socials a { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .socials a:hover { color: var(--text); }
+  .socials--labels { flex-direction: column; gap: 12px; }
+  .socials--labels a { color: var(--text); font-size: 14px; letter-spacing: .05em; }
+</style>

@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import portrait from '../assets/about/kristina.jpg';
+import { graph, breadcrumbs, personSchema } from '../lib/schema';
+import { SITE } from '../config/site';
+---
+<BaseLayout
+  title="Об авторе — фотограф Кристина, Москва и Рязань"
+  description="Знакомство с фотографом Кристиной: как я снимаю, мой подход к фотосессиям в Москве и Рязани."
+  type="profile"
+  image={portrait}
+  schema={graph(breadcrumbs([{ name: 'Об авторе', path: '/about/' }]), { '@type': 'ProfilePage', mainEntity: personSchema() })}
+>
+  <div class="page about">
+    <div class="about__photo">
+      <Image src={portrait} alt={`${SITE.role} ${SITE.fullName}`} widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" loading="eager" />
+    </div>
+    <div class="about__text prose">
+      <h1>Об авторе</h1>
+      <p>Привет! Меня зовут Кристина, я фотограф из Москвы и Рязани.</p>
+      <p>[Здесь будет знакомство: как пришла в фотографию, что люблю снимать, как проходит съёмка, почему со мной спокойно и легко.]</p>
+      <p>[2–3 абзаца живого текста. В нём естественно упомянуть города и виды съёмок — это помогает странице в поиске.]</p>
+      <p><a class="btn" href="/contacts/">Связаться со мной</a></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 4rem; align-items: start; }
+  .about__photo :global(img) { width: 100%; }
+  @media (max-width: 1000px) { .about { grid-template-columns: 1fr; gap: 2rem; } }
+</style>
