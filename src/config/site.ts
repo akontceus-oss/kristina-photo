@@ -27,7 +27,7 @@ export const SITE = {
     whatsapp: 'https://wa.me/79209772880',
     max: '',
     vk: '',
-    instagram: '', // показать иконку: вставить ссылку на профиль
+    instagram: 'https://www.instagram.com/christensenpho/',
     pinterest: '',
     youtube: '',
   },
