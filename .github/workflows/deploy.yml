@@ -18,6 +18,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +31,9 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # Пока секреты FTP не заданы, сайт только собирается (проверка), без выкладки
       - name: Upload via FTP
+        if: env.FTP_SERVER != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
