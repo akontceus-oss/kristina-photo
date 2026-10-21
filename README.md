@@ -24,7 +24,7 @@ npm run build    # готовый сайт в папке dist/
 | Пункты меню и разделы портфолио | `src/config/nav.ts` |
 | Фото слайдера на главной | `src/assets/slides/` — все файлы по алфавиту |
 | Виды съёмок: отдельная SEO-страница, фото, цена, FAQ (автоматически попадают в меню, на главную, в прайс и форму) | `src/content/services/*.md` + фото в `src/assets/services/<вид>/` |
-| Об авторе / Прайс / Инфо / Контакты | `src/pages/about.astro`, `price.astro`, `info.astro`, `contacts.astro` |
+| Об авторе / Инфо — услуги (цены, FAQ, запись) / Контакты | `src/pages/about.astro`, `uslugi.astro`, `contacts.astro` |
 | Форма заявки (почта/Telegram) | `public/send.php`, настройки — `form-config.example.php` |
 | Политика конфиденциальности и согласие | `src/pages/privacy.astro`, `src/pages/soglasie.astro` |
 

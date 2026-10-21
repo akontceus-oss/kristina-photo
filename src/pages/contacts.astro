@@ -1,43 +1,59 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Socials from '../components/Socials.astro';
-import Icon from '../components/Icon.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { SITE } from '../config/site';
 import { graph, breadcrumbs, businessSchema } from '../lib/schema';
+// Фото справа на странице контактов — заменить на любое своё
+import photo from '../assets/about/kristina.jpg';
 
 const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
 ---
 <BaseLayout
-  title="Контакты фотографа Кристины — заявка на съёмку в Москве и Рязани"
-  description="Связаться с фотографом Кристиной: телефон, WhatsApp, Telegram, ВКонтакте, Instagram или онлайн-заявка. Москва и Рязань."
+  title="Контакты фотографа Кристины — запись на съёмку в Москве и Рязани"
+  description={`Связаться с фотографом Кристиной: ${SITE.contacts.phone}, WhatsApp, Telegram, ${SITE.contacts.email}. Запись на съёмку онлайн. Москва и Рязань.`}
   schema={graph(breadcrumbs([{ name: 'Контакты', path: '/contacts/' }]), { '@type': 'ContactPage', about: businessSchema() })}
 >
-  <div class="page">
-    <h1>Контакты</h1>
-    <div class="grid">
-      <div>
-        <p class="lead">Напишите удобным способом — отвечу, расскажу о свободных датах и рассчитаю стоимость.</p>
-        <ul class="direct">
-          {SITE.contacts.phone && <li><a href={`tel:${tel}`}><Icon name="phone" /> {SITE.contacts.phone}</a></li>}
-          {SITE.contacts.email && <li><a href={`mailto:${SITE.contacts.email}`}><Icon name="email" /> {SITE.contacts.email}</a></li>}
-        </ul>
-        <h2>Мессенджеры и соцсети</h2>
-        <Socials labels size={22} />
-        <p class="cities">Снимаю в Москве и Рязани.</p>
-      </div>
-      <ContactForm title="Заявка на съёмку" />
+  <div class="contacts">
+    <div class="contacts__text">
+      <h1>Контакты</h1>
+      <p class="lead">Чтобы записаться на съёмку или задать вопрос, напишите мне в мессенджер или заполните форму — я свяжусь с вами в течение 1–2 рабочих дней.</p>
+      <Socials size={22} />
+      <p class="direct">
+        <a href={`mailto:${SITE.contacts.email}`}>{SITE.contacts.email}</a><br />
+        <a href={`tel:${tel}`}>{SITE.contacts.phone}</a>
+      </p>
+      <ul class="msg">
+        {SITE.socials.whatsapp && <li><a class="btn" href={SITE.socials.whatsapp} target="_blank" rel="noopener">Написать в WhatsApp</a></li>}
+        {SITE.socials.telegram && <li><a class="btn" href={SITE.socials.telegram} target="_blank" rel="noopener">Написать в Telegram</a></li>}
+      </ul>
+      <ContactForm title="Связаться со мной" />
+    </div>
+    <div class="contacts__photo">
+      <Image src={photo} alt={`${SITE.role} ${SITE.fullName}`} widths={[600, 1000, 1400]} sizes="(max-width: 1100px) 100vw, 40vw" />
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 4rem; }
-  .grid :global(.form-block h2) { margin-top: 0; }
-  .lead { color: var(--muted); margin-top: 0; }
-  .direct { list-style: none; padding: 0; margin: 2rem 0; }
-  .direct li { margin-bottom: 12px; }
-  .direct a { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-size: 18px; }
-  .cities { margin-top: 2.5rem; color: var(--muted); }
-  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; gap: 2rem; } }
+  .contacts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); min-height: 100vh; }
+  .contacts__text { padding: 6rem 4rem 3rem; max-width: 760px; }
+  .contacts__photo { position: relative; }
+  .contacts__photo :global(img) { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; }
+  .lead { color: #555; max-width: 520px; }
+  .direct { margin: 1.5rem 0; font-size: 15px; line-height: 1.9; }
+  .direct a { text-decoration: none; }
+  .msg { list-style: none; padding: 0; margin: 0; display: flex; gap: 12px; flex-wrap: wrap; }
+  .msg .btn { padding: .75rem 1.4rem; }
+  .contacts__text :global(.form-block) { margin-top: 3rem; }
+  .contacts__text :global(.form-block h2) { font-size: 2rem; }
+  .contacts__text :global(.grid) { grid-template-columns: 1fr; }
+  .contacts__text :global(.grid > label) { grid-column: 1 !important; grid-row: auto !important; }
+  @media (max-width: 1100px) {
+    .contacts { grid-template-columns: 1fr; }
+    .contacts__photo { order: -1; }
+    .contacts__photo :global(img) { position: static; height: 50vh; }
+    .contacts__text { padding: 2.5rem 1.25rem; }
+  }
 </style>

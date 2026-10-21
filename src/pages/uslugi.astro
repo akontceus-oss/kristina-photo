@@ -1,0 +1,125 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { graph, breadcrumbs, faqSchema } from '../lib/schema';
+import { SITE } from '../config/site';
+import { getMainServices, formatPrice } from '../lib/services';
+
+// Цены и состав услуг берутся из файлов видов съёмок (src/content/services/*.md).
+const services = await getMainServices();
+
+const faq = [
+  { q: 'Как забронировать съёмку?', a: 'Заполните форму записи ниже или напишите в мессенджер. Обсудим задачу, объём и дату. Бронь фиксируется предоплатой.' },
+  { q: 'Как рассчитывается стоимость?', a: 'Оплата почасовая — цены указаны выше. По списку блюд или товаров заранее оценю, сколько времени займёт съёмка.' },
+  { q: 'Что подготовить к съёмке меню?', a: 'Список блюд, свежие ингредиенты и повара на время съёмки. Перед съёмкой пришлю подробную памятку.' },
+  { q: 'Сколько ждать готовые фото?', a: 'Обычно 5–7 рабочих дней. Фото передаю по ссылке в нужных форматах и размерах.' },
+  { q: 'Работаете с юрлицами?', a: 'Да. Я самозанятая: работаю по договору, выдаю чек — его можно учесть в расходах компании или ИП.' },
+  { q: 'Вы снимаете в других городах?', a: 'Основные города — Москва и Рязань. Выезд в другие города возможен, стоимость обсуждается отдельно.' },
+];
+
+const schema = graph(
+  breadcrumbs([{ name: 'Услуги', path: '/uslugi/' }]),
+  {
+    '@type': 'OfferCatalog',
+    name: 'Услуги и стоимость фотосъёмки',
+    url: `${SITE.url}/uslugi/`,
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      name: s.data.title,
+      url: `${SITE.url}/${s.id}/`,
+      priceCurrency: 'RUB',
+      ...(s.data.price
+        ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: s.data.price, priceCurrency: 'RUB', unitText: s.data.priceUnit } }
+        : {}),
+      itemOffered: { '@type': 'Service', name: s.data.h1, provider: { '@id': `${SITE.url}/#business` } },
+    })),
+  },
+  faqSchema(faq),
+);
+---
+<BaseLayout
+  title="Услуги и цены: съёмка меню и предметная съёмка в Москве и Рязани — фотограф Кристина"
+  description={`Услуги и стоимость фотосъёмки: ${services.map((s) => `${s.data.title.toLowerCase()} — ${formatPrice(s.data.price)}/${s.data.priceUnit}`).join(', ')}. Запись на съёмку онлайн. Москва и Рязань.`}
+  schema={schema}
+>
+  <div class="page page--wide">
+    <h1>Услуги и цены</h1>
+    <p class="lead">Фотосъёмка в Москве и Рязани — на вашей площадке или в студии. Выезд в другие города и срочная обработка — по договорённости.</p>
+
+    <div class="services">
+      {services.map((s, i) => (
+        <article class:list={['svc', { 'svc--rev': i % 2 }]}>
+          <a class="svc__img" href={`/${s.id}/`} tabindex="-1" aria-hidden="true">
+            <Image src={s.data.cover.src} alt="" widths={[600, 900]} sizes="(max-width: 900px) 100vw, 45vw" />
+          </a>
+          <div class="svc__body">
+            <h2><a href={`/${s.id}/`}>{s.data.title}</a></h2>
+            <p class="svc__price">{formatPrice(s.data.price)}{s.data.price ? <span> / {s.data.priceUnit}</span> : null}</p>
+            <p class="svc__lead">{s.data.lead}</p>
+            {s.data.includes.length > 0 && <ul>{s.data.includes.map((it) => <li>{it}</li>)}</ul>}
+            {s.data.priceNote && <p class="svc__note">{s.data.priceNote}</p>}
+            <p class="svc__actions">
+              <a class="btn" href="#zayavka">Записаться</a>
+              <a class="svc__more" href={`/${s.id}/`}>Портфолио и подробности</a>
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <section class="extra">
+      <h2>Дополнительно</h2>
+      <ul>
+        <li>Аренда студии — оплачивается отдельно по тарифу студии</li>
+        <li>Фуд-стилист, реквизит под задачу — по запросу</li>
+        <li>Оплата: самозанятая, выдаю чек — удобно для юрлиц и ИП</li>
+      </ul>
+    </section>
+
+    <section class="faq">
+      <h2>Информация</h2>
+      {faq.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </section>
+
+    <ContactForm />
+  </div>
+</BaseLayout>
+
+<style>
+  .page--wide { max-width: 1300px; }
+  .lead { color: var(--muted); max-width: 680px; margin-bottom: 3.5rem; }
+  .services { display: grid; gap: 5rem; }
+  .svc { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .svc--rev .svc__img { order: 2; }
+  .svc__img :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .svc h2 { margin: 0 0 .75rem; font-size: 2.2rem; }
+  .svc h2 a { text-decoration: none; }
+  .svc__price { font-size: 1.5rem; font-family: var(--font-serif); margin: 0 0 1rem; }
+  .svc__price span { font-size: 1rem; color: var(--muted); }
+  .svc__lead { color: #444; }
+  .svc ul { padding-left: 1.1rem; color: #444; font-size: 14px; }
+  .svc__note { color: var(--muted); font-size: 13px; }
+  .svc__actions { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; margin-top: 1.75rem; }
+  .svc__more { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .extra { margin-top: 5rem; max-width: 760px; }
+  .extra ul { color: #444; padding-left: 1.1rem; }
+  .faq { max-width: 820px; margin: 4rem 0; }
+  .faq details { border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
+  .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.35rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-family: var(--font-sans); color: var(--muted); transition: transform .2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq p { color: #444; margin: .75rem 0 0; }
+  @media (max-width: 900px) {
+    .services { gap: 3.5rem; }
+    .svc { grid-template-columns: 1fr; gap: 1.5rem; }
+    .svc--rev .svc__img { order: 0; }
+    .svc h2 { font-size: 1.8rem; }
+  }
+</style>

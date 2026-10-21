@@ -5,13 +5,12 @@ export interface NavItem {
 }
 
 /**
- * Пункты меню. Подменю «Портфолио» собирается автоматически
- * из видов съёмок (src/content/services), см. Sidebar.astro.
+ * Пункты меню (слева и продублированы внизу каждой страницы).
+ * Подменю «Портфолио» собирается автоматически из видов съёмок (src/content/services).
  */
 export const NAV: NavItem[] = [
   { label: 'Портфолио', href: '/portfolio/', children: [] },
   { label: 'Об авторе', href: '/about/' },
-  { label: 'Прайс', href: '/price/' },
-  { label: 'Инфо', href: '/info/' },
+  { label: 'Инфо — услуги', href: '/uslugi/' },
   { label: 'Контакты', href: '/contacts/' },
 ];

@@ -35,18 +35,20 @@ if ($ts > 0 && (microtime(true) * 1000 - $ts) < 3000) reply(200, ['ok' => true])
 
 $clean = fn(string $k, int $max) => trim(mb_substr(strip_tags((string) ($_POST[$k] ?? '')), 0, $max));
 $name = $clean('name', 100);
-$contact = $clean('contact', 100);
+$phone = $clean('phone', 40);
+$email = $clean('email', 100);
 $service = $clean('service', 100);
 $message = $clean('message', 2000);
 $page = $clean('page', 200);
 
-if ($name === '' || $contact === '') reply(422, ['ok' => false, 'error' => 'required']);
+if ($name === '' || $phone === '') reply(422, ['ok' => false, 'error' => 'required']);
 if (($_POST['consent'] ?? '') !== '1') reply(422, ['ok' => false, 'error' => 'consent']);
 
 $host = preg_replace('/[^a-z0-9.\-]/i', '', $_SERVER['HTTP_HOST'] ?? 'site');
 $text = "Новая заявка с сайта {$host}\n\n"
     . "Имя: {$name}\n"
-    . "Контакт: {$contact}\n"
+    . "Телефон: {$phone}\n"
+    . ($email !== '' ? "Почта: {$email}\n" : '')
     . "Вид съёмки: {$service}\n"
     . ($message !== '' ? "Комментарий: {$message}\n" : '')
     . "Страница: {$page}\n"

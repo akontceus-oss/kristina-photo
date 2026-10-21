@@ -23,8 +23,8 @@ const full = await Promise.all(photos.map((p) => getImage({ src: p.src, width: M
 </dialog>
 
 <style>
-  .gallery { columns: 3 280px; column-gap: 12px; }
-  .gallery__item { display: block; margin-bottom: 12px; break-inside: avoid; overflow: hidden; }
+  .gallery { columns: 3 280px; column-gap: 20px; }
+  .gallery__item { display: block; margin-bottom: 20px; break-inside: avoid; overflow: hidden; background: #f6f5f3; padding: 14px; }
   .gallery__item :global(img) { width: 100%; transition: transform .6s ease, opacity .3s; }
   .gallery__item:hover :global(img) { transform: scale(1.02); opacity: .95; }
 

@@ -3,34 +3,38 @@ import { SITE } from '../config/site';
 import { getMainServices } from '../lib/services';
 
 interface Props { title?: string; selected?: string }
-const { title = 'Оставить заявку', selected } = Astro.props;
+const { title = 'Запись на съёмку', selected } = Astro.props;
 const services = await getMainServices();
 ---
 <section class="form-block" id="zayavka">
   <h2>{title}</h2>
-  <p class="form-block__lead">Опишите задачу — я свяжусь с вами в течение дня, уточню детали и рассчитаю стоимость.</p>
+  <p class="form-block__lead">Заполните форму — я свяжусь с вами в течение дня, уточню детали и рассчитаю стоимость.</p>
   <form class="form" method="post" action={SITE.form.endpoint} data-form novalidate>
-    <div class="row">
-      <label>
-        <span>Имя</span>
+    <div class="grid">
+      <label class="f-name">
+        <span>Имя *</span>
         <input name="name" type="text" autocomplete="name" required maxlength="100" />
       </label>
-      <label>
-        <span>Телефон или ник в мессенджере</span>
-        <input name="contact" type="text" autocomplete="tel" required maxlength="100" />
+      <label class="f-service">
+        <span>Вид съёмки *</span>
+        <select name="service" required>
+          {services.map((s) => <option value={s.data.title} selected={s.id === selected}>{s.data.title}</option>)}
+          <option value="Другое">Другое</option>
+        </select>
+      </label>
+      <label class="f-phone">
+        <span>Телефон *</span>
+        <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+7" />
+      </label>
+      <label class="f-message">
+        <span>Комментарии</span>
+        <textarea name="message" rows="1" maxlength="2000" placeholder="Что снимаем, сколько позиций, даты" data-autosize></textarea>
+      </label>
+      <label class="f-email">
+        <span>Эл. почта</span>
+        <input name="email" type="email" autocomplete="email" maxlength="100" />
       </label>
     </div>
-    <label>
-      <span>Вид съёмки</span>
-      <select name="service">
-        {services.map((s) => <option value={s.data.title} selected={s.id === selected}>{s.data.title}</option>)}
-        <option value="Другое">Другое</option>
-      </select>
-    </label>
-    <label>
-      <span>Комментарий</span>
-      <textarea name="message" rows="4" maxlength="2000" placeholder="Что нужно снять, сколько позиций, желаемые даты"></textarea>
-    </label>
     <!-- Защита от спама: поле скрыто от людей, боты его заполняют -->
     <label class="hp" aria-hidden="true">Сайт<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
     <input type="hidden" name="ts" value="" data-ts />
@@ -39,18 +43,25 @@ const services = await getMainServices();
       <input type="checkbox" name="consent" value="1" required />
       <span>Я даю <a href="/soglasie/" target="_blank">согласие на обработку персональных данных</a> и ознакомлен(а) с <a href="/privacy/" target="_blank">политикой конфиденциальности</a></span>
     </label>
-    <button type="submit" class="btn btn--dark">Отправить заявку</button>
+    <button type="submit" class="btn btn--dark">Записаться</button>
     <p class="form__status" role="status" aria-live="polite" data-status></p>
   </form>
 </section>
 
 <style>
-  .form-block { max-width: 760px; }
+  .form-block { max-width: 900px; margin-top: 4rem; }
+  .form-block h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: .5rem; }
   .form-block__lead { color: var(--muted); margin-top: 0; }
   .form { display: grid; gap: 18px; margin-top: 1.5rem; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; }
+  .f-name { grid-column: 1; grid-row: 1; }
+  .f-phone { grid-column: 1; grid-row: 2; }
+  .f-email { grid-column: 1; grid-row: 3; }
+  .f-service { grid-column: 2; grid-row: 1; }
+  .f-message { grid-column: 2; grid-row: 2 / span 2; display: flex; flex-direction: column; }
+  .f-message textarea { flex: 1; min-height: 44px; }
   label span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  input[type='text'], select, textarea {
+  input[type='text'], input[type='tel'], input[type='email'], select, textarea {
     width: 100%; border: 0; border-bottom: 1px solid #cfcac4; padding: 10px 0; font: inherit; font-size: 15px;
     background: transparent; color: var(--text); border-radius: 0;
   }
@@ -67,7 +78,10 @@ const services = await getMainServices();
   .form__status { margin: 0; font-size: 14px; min-height: 1.5em; }
   .form__status.ok { color: #3c6e3c; }
   .form__status.err { color: #a33; }
-  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: 1fr; gap: 22px; }
+    .grid > label { grid-column: 1 !important; grid-row: auto !important; }
+  }
 </style>
 
 <script>
@@ -82,7 +96,7 @@ const services = await getMainServices();
       e.preventDefault();
       if (!form.checkValidity()) {
         const consent = form.querySelector<HTMLInputElement>('[name=consent]')!;
-        say(consent.checked ? 'Заполните имя и контакт для связи.' : 'Нужно согласие на обработку персональных данных.', false);
+        say(consent.checked ? 'Заполните имя и телефон.' : 'Нужно согласие на обработку персональных данных.', false);
         return;
       }
       btn.disabled = true;

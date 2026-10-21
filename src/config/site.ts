@@ -17,17 +17,17 @@ export const SITE = {
   locale: 'ru_RU',
 
   contacts: {
-    phone: '+7 900 000-00-00',
-    email: 'hello@kristina-photo.ru',
+    phone: '+7 920 977-28-80',
+    email: 'begoniaapp@gmail.com',
   },
 
   /** Мессенджеры и соцсети. Пустая строка = кнопка не показывается. */
   socials: {
-    telegram: 'https://t.me/username',
-    whatsapp: 'https://wa.me/79000000000',
+    telegram: 'https://t.me/chris7ensen',
+    whatsapp: 'https://wa.me/79209772880',
     max: '',
-    vk: 'https://vk.com/username',
-    instagram: 'https://instagram.com/username',
+    vk: '',
+    instagram: '', // показать иконку: вставить ссылку на профиль
     pinterest: '',
     youtube: '',
   },
@@ -55,7 +55,7 @@ export const SITE = {
     legalName: '[Фамилия] Кристина [Отчество]',
     status: 'плательщик налога на профессиональный доход (самозанятая)',
     inn: '000000000000',
-    email: 'hello@kristina-photo.ru',
+    email: 'begoniaapp@gmail.com',
     policyDate: '21.10.2026',
   },
 } as const;
