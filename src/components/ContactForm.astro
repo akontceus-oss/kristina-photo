@@ -2,13 +2,25 @@
 import { SITE } from '../config/site';
 import { getMainServices } from '../lib/services';
 
-interface Props { title?: string; selected?: string }
-const { title = 'Запись на съёмку', selected } = Astro.props;
+interface Props {
+  title?: string;
+  /** Текст под заголовком; пустая строка — без текста */
+  lead?: string;
+  /** Подпись кнопки */
+  button?: string;
+  selected?: string;
+}
+const {
+  title = 'Запись на съёмку',
+  lead = 'Заполните форму — я свяжусь с вами в течение дня, уточню детали и рассчитаю стоимость.',
+  button = 'Записаться',
+  selected,
+} = Astro.props;
 const services = await getMainServices();
 ---
 <section class="form-block" id="zayavka">
-  <h2>{title}</h2>
-  <p class="form-block__lead">Заполните форму — я свяжусь с вами в течение дня, уточню детали и рассчитаю стоимость.</p>
+  {title && <h2>{title}</h2>}
+  {lead && <p class="form-block__lead">{lead}</p>}
   <form class="form" method="post" action={SITE.form.endpoint} data-form novalidate>
     <div class="grid">
       <label class="f-name">
@@ -25,6 +37,10 @@ const services = await getMainServices();
       <label class="f-phone">
         <span>Телефон *</span>
         <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+7" />
+      </label>
+      <label class="f-date">
+        <span>Дата съёмки</span>
+        <input name="date" type="date" data-date />
       </label>
       <label class="f-message">
         <span>Комментарии</span>
@@ -43,7 +59,7 @@ const services = await getMainServices();
       <input type="checkbox" name="consent" value="1" required />
       <span>Я даю <a href="/soglasie/" target="_blank">согласие на обработку персональных данных</a> и ознакомлен(а) с <a href="/privacy/" target="_blank">политикой конфиденциальности</a></span>
     </label>
-    <button type="submit" class="btn btn--dark">Записаться</button>
+    <button type="submit" class="btn btn--dark">{button}</button>
     <p class="form__status" role="status" aria-live="polite" data-status></p>
   </form>
 </section>
@@ -51,24 +67,25 @@ const services = await getMainServices();
 <style>
   .form-block { max-width: 900px; margin-top: 4rem; }
   .form-block h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: .5rem; }
-  .form-block__lead { color: var(--muted); margin-top: 0; }
+  .form-block__lead { color: var(--text); margin-top: 0; }
   .form { display: grid; gap: 18px; margin-top: 1.5rem; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; }
   .f-name { grid-column: 1; grid-row: 1; }
   .f-phone { grid-column: 1; grid-row: 2; }
   .f-email { grid-column: 1; grid-row: 3; }
   .f-service { grid-column: 2; grid-row: 1; }
-  .f-message { grid-column: 2; grid-row: 2 / span 2; display: flex; flex-direction: column; }
+  .f-date { grid-column: 2; grid-row: 2; }
+  .f-message { grid-column: 2; grid-row: 3; display: flex; flex-direction: column; }
   .f-message textarea { flex: 1; min-height: 44px; }
   label span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  input[type='text'], input[type='tel'], input[type='email'], select, textarea {
+  input[type='text'], input[type='tel'], input[type='email'], input[type='date'], select, textarea {
     width: 100%; border: 0; border-bottom: 1px solid #cfcac4; padding: 10px 0; font: inherit; font-size: 15px;
     background: transparent; color: var(--text); border-radius: 0;
   }
   input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--text); }
   textarea { resize: vertical; }
-  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #555; }
-  .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: #555; margin: 0; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text); }
+  .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); margin: 0; }
   .consent input { margin-top: 3px; accent-color: var(--text); }
   .consent a { color: var(--accent); }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -88,6 +105,11 @@ const services = await getMainServices();
   document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
     const ts = form.querySelector<HTMLInputElement>('[data-ts]')!;
     ts.value = String(Date.now());
+    // Дата из календаря в разделе «Инфо»: /contacts/?date=ГГГГ-ММ-ДД
+    const date = form.querySelector<HTMLInputElement>('[data-date]')!;
+    date.min = new Date().toISOString().slice(0, 10);
+    const preset = new URLSearchParams(location.search).get('date');
+    if (preset && /^\d{4}-\d{2}-\d{2}$/.test(preset)) date.value = preset;
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const say = (text: string, ok: boolean) => { status.textContent = text; status.className = 'form__status ' + (ok ? 'ok' : 'err'); };

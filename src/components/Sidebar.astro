@@ -4,6 +4,11 @@ import { SITE } from '../config/site';
 import Socials from './Socials.astro';
 import { getMainServices } from '../lib/services';
 
+interface Props {
+  /** Соцсети и политика внизу меню — только на страницах без подвала (главная), чтобы не дублировать подвал */
+  showBottom?: boolean;
+}
+const { showBottom = false } = Astro.props;
 const services = await getMainServices();
 const nav = NAV.map((item) =>
   item.href === '/portfolio/' ? { ...item, children: services.map((s) => ({ label: s.data.title, href: `/${s.id}/` })) } : item,
@@ -42,11 +47,11 @@ const isActive = (href: string): boolean =>
         </li>
       ))}
     </ul>
-    <div class="sidebar__bottom">
+    {showBottom && <div class="sidebar__bottom">
       <Socials />
       <p class="sidebar__meta">{SITE.role} · {SITE.cities.join(' · ')}</p>
       <p class="sidebar__meta"><a href="/privacy/">Политика конфиденциальности</a></p>
-    </div>
+    </div>}
   </nav>
 </header>
 
@@ -64,15 +69,15 @@ const isActive = (href: string): boolean =>
   .nav > ul > li { margin-bottom: 14px; }
   .nav__link, .sub a {
     font: 500 12px/1.4 var(--font-sans); letter-spacing: .16em; text-transform: uppercase;
-    color: #555; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer;
+    color: var(--text); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer;
     transition: color .2s;
   }
-  .nav__link:hover, .nav__link.active, .sub a:hover, .sub a.active { color: #000; }
+  .nav__link:hover, .nav__link.active, .sub a:hover, .sub a.active { color: #000; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
   .plus { display: inline-block; margin-left: 6px; transition: transform .25s; }
   .has-sub.open .plus { transform: rotate(45deg); }
   .sub { max-height: 0; overflow: hidden; visibility: hidden; padding-left: 14px !important; transition: max-height .35s ease, margin .35s ease, visibility .35s; }
   .has-sub.open .sub { max-height: 400px; margin-top: 10px; visibility: visible; }
-  .sub a { font-size: 11px; color: var(--muted); display: inline-block; padding: 4px 0; }
+  .sub a { font-size: 11px; color: #3a3a3a; display: inline-block; padding: 4px 0; }
   .sidebar__bottom { margin-top: auto; }
   .sidebar__meta a { color: inherit; }
   .sidebar__meta { margin: 14px 0 0; font-size: 11px; color: var(--muted); letter-spacing: .08em; }

@@ -13,7 +13,7 @@ const services = pages
   .map((p) => ({ href: `/${p.id}/`, label: label(p), draft: p.data.draft }))
   .sort((a, b) => a.label.localeCompare(b.label, 'ru'));
 const articles = (await getArticles()).map((a) => ({ href: `/blog/${a.id}/`, label: a.data.title }));
-const main = [{ label: 'Главная', href: '/' }, ...NAV, { label: 'Политика конфиденциальности', href: '/privacy/' }, { label: 'Согласие на обработку данных', href: '/soglasie/' }];
+const main = [{ label: 'Главная', href: '/' }, ...NAV, { label: 'Статьи', href: '/blog/' }, { label: 'Политика конфиденциальности', href: '/privacy/' }, { label: 'Согласие на обработку данных', href: '/soglasie/' }];
 ---
 <details class="pagemap" open>
   <summary>Карта страниц (временно) — {main.length + services.length + articles.length}</summary>

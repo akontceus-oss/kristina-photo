@@ -31,11 +31,11 @@ const articles = await getArticles();
 
 <style>
   .page--wide { max-width: 1300px; }
-  .lead { color: var(--muted); max-width: 680px; margin-bottom: 3rem; }
+  .lead { color: var(--text); max-width: 680px; margin-bottom: 3rem; }
   .list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 3rem 2.5rem; }
   .list a { display: block; text-decoration: none; color: var(--text); }
   .list :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: 1rem; }
   .list__date { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .list__title { display: block; font-family: var(--font-serif); font-size: 1.6rem; line-height: 1.2; margin: .4rem 0 .5rem; }
-  .list__lead { display: block; color: #444; font-size: 14px; }
+  .list__lead { display: block; color: var(--text); font-size: 14px; }
 </style>

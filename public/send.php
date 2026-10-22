@@ -41,6 +41,7 @@ $phone = $clean('phone', 40);
 $email = $clean('email', 100);
 $service = $clean('service', 100);
 $message = $clean('message', 2000);
+$date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['date'] ?? '')) ? date('d.m.Y', strtotime($_POST['date'])) : '';
 $page = $clean('page', 200);
 
 if ($name === '' || $phone === '') reply(422, ['ok' => false, 'error' => 'required']);
@@ -52,6 +53,7 @@ $text = "Новая заявка с сайта {$host}\n\n"
     . "Телефон: {$phone}\n"
     . ($email !== '' ? "Почта: {$email}\n" : '')
     . "Вид съёмки: {$service}\n"
+    . ($date !== '' ? "Дата съёмки: {$date}\n" : '')
     . ($message !== '' ? "Комментарий: {$message}\n" : '')
     . "Страница: {$page}\n"
     . "Согласие на обработку ПД: да, " . date('d.m.Y H:i') . "\n";
@@ -79,6 +81,7 @@ if ($config['telegram_bot_token'] !== '' && $config['telegram_chat_id'] !== '') 
         . "<b>Телефон:</b> " . ($tel !== '' ? "<a href=\"tel:{$h($tel)}\">{$h($phone)}</a>" : $h($phone)) . "\n"
         . ($email !== '' ? "<b>Почта:</b> {$h($email)}\n" : '')
         . "<b>Вид съёмки:</b> {$h($service)}\n"
+        . ($date !== '' ? "<b>Дата съёмки:</b> {$date}\n" : '')
         . ($message !== '' ? "<b>Комментарий:</b> {$h($message)}\n" : '')
         . "<b>Страница:</b> {$h($page)}\n"
         . "<i>Согласие на обработку ПД: да, " . date('d.m.Y H:i') . "</i>";
