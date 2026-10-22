@@ -1,10 +1,10 @@
-# Сборка сайта и выкладка на виртуальный хостинг TimeWeb по FTP при каждом push в main.
+# Сборка сайта и выкладка на виртуальный хостинг (REG.RU, TimeWeb и т.п.) по FTP при каждом push в main.
 # В репозитории нужно добавить секреты (Settings → Secrets and variables → Actions):
-#   FTP_SERVER   — например, vh123.timeweb.ru
-#   FTP_USERNAME — логин от FTP (из панели TimeWeb)
+#   FTP_SERVER   — адрес FTP-сервера из панели хостинга (например, server123.hosting.reg.ru)
+#   FTP_USERNAME — логин от FTP (из панели хостинга)
 #   FTP_PASSWORD — пароль от FTP
-#   FTP_DIR      — папка сайта на хостинге, например /kristina-photo.ru/public_html/
-name: Deploy to TimeWeb
+#   FTP_DIR      — папка сайта на хостинге, например /www/emozioniinapp.ru/
+name: Deploy
 
 on:
   push:
