@@ -12,5 +12,6 @@ export const NAV: NavItem[] = [
   { label: 'Портфолио', href: '/portfolio/', children: [] },
   { label: 'Об авторе', href: '/about/' },
   { label: 'Инфо — услуги', href: '/uslugi/' },
+  { label: 'Статьи', href: '/blog/' },
   { label: 'Контакты', href: '/contacts/' },
 ];

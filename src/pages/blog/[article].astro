@@ -1,0 +1,88 @@
+---
+/** Статья: /blog/<имя-файла>/ из src/content/articles */
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { getArticles, formatDate } from '../../lib/articles';
+import { getAllServicePages } from '../../lib/services';
+import { graph, breadcrumbs, faqSchema } from '../../lib/schema';
+import { SITE } from '../../config/site';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((entry) => ({ params: { article: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const path = `/blog/${entry.id}/`;
+const pages = await getAllServicePages();
+const services = d.services.map((id) => pages.find((p) => p.id === id)).filter((p) => !!p);
+const more = (await getArticles()).filter((a) => a.id !== entry.id).slice(0, 3);
+
+const nodes: Record<string, unknown>[] = [
+  breadcrumbs([{ name: 'Статьи', path: '/blog/' }, { name: d.title, path }]),
+  {
+    '@type': 'Article',
+    headline: d.title,
+    description: d.description,
+    datePublished: d.date.toISOString(),
+    inLanguage: 'ru-RU',
+    author: { '@id': `${SITE.url}/#person` },
+    publisher: { '@id': `${SITE.url}/#business` },
+    mainEntityOfPage: new URL(path, SITE.url).href,
+  },
+];
+if (d.faq.length) nodes.push(faqSchema(d.faq));
+---
+<BaseLayout title={d.seoTitle} description={d.description} image={d.cover.src} type="article" schema={graph(...nodes)} noindex={d.draft}>
+  <article class="page page--narrow">
+    <nav class="crumbs" aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/blog/">Статьи</a> / <span>{d.title}</span></nav>
+    <h1>{d.title}</h1>
+    <p class="meta"><time datetime={d.date.toISOString()}>{formatDate(d.date)}</time> · {SITE.role} {SITE.fullName}</p>
+    <p class="lead">{d.lead}</p>
+    <Image class="cover" src={d.cover.src} alt={d.cover.alt} widths={[800, 1200]} sizes="(max-width: 900px) 100vw, 820px" loading="eager" />
+    <div class="prose"><Content /></div>
+
+    {d.faq.length > 0 && (
+      <section class="faq">
+        <h2>Частые вопросы</h2>
+        {d.faq.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+      </section>
+    )}
+
+    {services.length > 0 && (
+      <section class="services">
+        <h2>Услуги по теме</h2>
+        <ul>{services.map((s) => <li><a href={`/${s.id}/`}>{s.data.title}</a> — {s.data.lead}</li>)}</ul>
+      </section>
+    )}
+
+    <ContactForm />
+
+    {more.length > 0 && (
+      <section class="more">
+        <h2>Другие статьи</h2>
+        <ul>{more.map((a) => <li><a href={`/blog/${a.id}/`}>{a.data.title}</a></li>)}</ul>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .crumbs { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .crumbs a { color: var(--muted); text-decoration: none; }
+  .meta { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .lead { font-size: 1.1rem; color: #444; }
+  .page :global(.cover) { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; margin: 1.5rem 0 2rem; }
+  .prose :global(h2) { margin-top: 2.5rem; }
+  .faq { margin: 3rem 0; }
+  .faq details { border-bottom: 1px solid var(--line); padding: 1rem 0; }
+  .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.3rem; }
+  .faq p { color: #444; }
+  .services ul, .more ul { padding-left: 1.1rem; color: #444; }
+  .services a, .more a { color: var(--accent); }
+  .more { margin-top: 3rem; }
+</style>
