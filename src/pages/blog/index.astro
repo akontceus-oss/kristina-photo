@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { graph, breadcrumbs } from '../../lib/schema';
+import { getArticles, formatDate } from '../../lib/articles';
+
+const articles = await getArticles();
+---
+<BaseLayout
+  title="Статьи о съёмке меню и предметной съёмке — фотограф Кристина"
+  description="Полезные статьи для ресторанов, кафе и продавцов маркетплейсов: как подготовиться к съёмке меню, требования к фото для Wildberries и Ozon, из чего складывается цена."
+  schema={graph(breadcrumbs([{ name: 'Статьи', path: '/blog/' }]))}
+>
+  <div class="page page--wide">
+    <h1>Статьи</h1>
+    <p class="lead">Коротко и по делу о том, как получить фото, которые продают: для меню, доставки, сайта и маркетплейсов.</p>
+    <ul class="list">
+      {articles.map((a) => (
+        <li>
+          <a href={`/blog/${a.id}/`}>
+            <Image src={a.data.cover.src} alt="" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" />
+            <span class="list__date">{formatDate(a.data.date)}</span>
+            <span class="list__title">{a.data.title}</span>
+            <span class="list__lead">{a.data.lead}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .page--wide { max-width: 1300px; }
+  .lead { color: var(--text); max-width: 680px; margin-bottom: 3rem; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 3rem 2.5rem; }
+  .list a { display: block; text-decoration: none; color: var(--text); }
+  .list :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: 1rem; }
+  .list__date { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .list__title { display: block; font-family: var(--font-serif); font-size: 1.6rem; line-height: 1.2; margin: .4rem 0 .5rem; }
+  .list__lead { display: block; color: var(--text); font-size: 14px; }
+</style>

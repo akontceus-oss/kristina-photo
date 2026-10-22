@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { graph, breadcrumbs, faqSchema } from '../lib/schema';
+import { FAQ } from '../config/faq';
+import { CALENDAR } from '../config/calendar';
+import { REVIEWS } from '../config/reviews';
+---
+<BaseLayout
+  title="Инфо: свободные даты, отзывы и ответы на вопросы — фотограф Кристина"
+  description="Календарь свободных дат для съёмки, отзывы клиентов и ответы на частые вопросы: бронирование, стоимость, сроки, работа с юрлицами. Москва и Рязань."
+  schema={graph(breadcrumbs([{ name: 'Инфо', path: '/info/' }]), faqSchema(FAQ))}
+>
+  <div class="page">
+    <h1>Инфо</h1>
+    <p class="lead">Свободные даты для съёмки, отзывы и ответы на вопросы, которые мне задают чаще всего.</p>
+
+    <section class="cal" aria-labelledby="cal-title">
+      <h2 id="cal-title">Календарь съёмок</h2>
+      <p class="cal__hint">Нажмите на свободный день, чтобы оставить заявку на эту дату.</p>
+      <div class="cal__months" data-calendar data-busy={JSON.stringify(CALENDAR.busy)} data-months={CALENDAR.months}></div>
+      <p class="cal__legend"><span class="dot dot--free"></span>свободно <span class="dot dot--busy"></span>занято</p>
+      <noscript><p>Чтобы узнать свободные даты, напишите мне — ссылки на странице <a href="/contacts/">«Контакты»</a>.</p></noscript>
+    </section>
+
+    {REVIEWS.length > 0 && (
+      <section class="reviews">
+        <h2>Отзывы</h2>
+        <div class="reviews__list">
+          {REVIEWS.map((r) => (
+            <figure>
+              <blockquote>{r.text}</blockquote>
+              <figcaption>{r.name}{r.company && <span>, {r.company}</span>}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="faq">
+      <h2>Ответы на частые вопросы</h2>
+      {FAQ.map((f) => (
+        <details>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+      <p class="faq__more">Цены на все виды съёмки — в разделе <a href="/uslugi/">«Цены»</a>.</p>
+    </section>
+
+    <ContactForm />
+  </div>
+</BaseLayout>
+
+<style>
+  .lead { max-width: 680px; margin-bottom: 3rem; }
+  .cal__hint { margin-top: 0; }
+  .cal__months { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 340px)); gap: 2.5rem; margin-top: 1.5rem; }
+  .cal__months :global(.m h3) { font-family: var(--font-sans); font-size: 12px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 .9rem; }
+  .cal__months :global(.grid7) { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal__months :global(.wd) { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding-bottom: 4px; }
+  .cal__months :global(.d) { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; font-size: 14px; text-decoration: none; border: 1px solid transparent; }
+  .cal__months :global(a.d) { border-color: var(--line); color: var(--text); transition: background .2s, color .2s; }
+  .cal__months :global(a.d:hover) { background: var(--text); color: #fff; }
+  .cal__months :global(.d--busy) { background: #eceae6; text-decoration: line-through; color: #9a958f; }
+  .cal__months :global(.d--past) { color: #c9c5c0; }
+  .cal__legend { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-top: 1.25rem; }
+  .dot { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--line); }
+  .dot--busy { background: #eceae6; margin-left: 14px; }
+  .reviews { margin-top: 4rem; }
+  .reviews__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+  .reviews figure { margin: 0; padding: 1.75rem; border: 1px solid var(--line); }
+  .reviews blockquote { margin: 0 0 1rem; font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.5; }
+  .reviews figcaption { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  .reviews figcaption span { text-transform: none; letter-spacing: 0; }
+  .faq { max-width: 820px; margin: 4rem 0; }
+  .faq details { border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
+  .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.35rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-family: var(--font-sans); transition: transform .2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq p { margin: .75rem 0 0; }
+  .faq__more a { color: var(--accent); }
+</style>
+
+<script>
+  // Календарь строится в браузере, чтобы всегда показывать текущий месяц без пересборки сайта.
+  const root = document.querySelector<HTMLElement>('[data-calendar]');
+  if (root) {
+    const busy = new Set<string>(JSON.parse(root.dataset.busy || '[]'));
+    const months = Number(root.dataset.months || 2);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const today = iso(new Date());
+    const now = new Date();
+    const html: string[] = [];
+    for (let i = 0; i < months; i++) {
+      const first = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const days = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+      const title = first.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }).replace(' г.', '');
+      const cells = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'].map((w) => `<span class="wd">${w}</span>`);
+      for (let k = 0; k < (first.getDay() + 6) % 7; k++) cells.push('<span></span>');
+      for (let day = 1; day <= days; day++) {
+        const key = iso(new Date(first.getFullYear(), first.getMonth(), day));
+        if (key < today) cells.push(`<span class="d d--past">${day}</span>`);
+        else if (busy.has(key)) cells.push(`<span class="d d--busy" title="Занято">${day}</span>`);
+        else cells.push(`<a class="d" href="/contacts/?date=${key}#zayavka" title="Записаться на ${day} число">${day}</a>`);
+      }
+      html.push(`<div class="m"><h3>${title}</h3><div class="grid7">${cells.join('')}</div></div>`);
+    }
+    root.innerHTML = html.join('');
+  }
+</script>

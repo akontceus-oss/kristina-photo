@@ -7,8 +7,8 @@
 
 :root {
   --bg: #ffffff;
-  --text: #2b2b2b;
-  --muted: #7a7a7a;
+  --text: #111111;
+  --muted: #4a4a4a;
   --line: #e6e3df;
   --accent: #8a7560;
   --sidebar-w: 300px;
@@ -52,7 +52,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 2.5rem 0 1rem; }
 }
 .btn:hover { background: var(--text); color: #fff; }
 
-.prose p, .prose li { color: #444; }
+.prose p, .prose li { color: var(--text); }
 .prose a { color: var(--accent); }
 
 @media (max-width: 900px) {

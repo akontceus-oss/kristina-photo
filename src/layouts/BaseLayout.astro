@@ -24,7 +24,7 @@ const { bare = false, ...seo } = Astro.props;
   <body>
     <a class="skip-link" href="#content">Перейти к содержимому</a>
     <div class="shell">
-      <Sidebar />
+      <Sidebar showBottom={bare} />
       <main id="content" class="main">
         <slot />
         {!bare && <Footer />}

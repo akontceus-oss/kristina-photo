@@ -5,8 +5,11 @@ import Socials from '../components/Socials.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { SITE } from '../config/site';
 import { graph, breadcrumbs, businessSchema } from '../lib/schema';
-// Фото справа на странице контактов — заменить на любое своё
+// Фото слева на странице контактов — заменить на любое своё
 import photo from '../assets/about/kristina.jpg';
+
+// Приветствие в рамке над контактами — поменяйте на свой текст
+const GREETING = 'Я всегда открыта новым проектам и поездкам. Расскажите о своей задаче — подберу формат съёмки, рассчитаю стоимость и предложу удобную дату.';
 
 const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
 ---
@@ -16,44 +19,42 @@ const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
   schema={graph(breadcrumbs([{ name: 'Контакты', path: '/contacts/' }]), { '@type': 'ContactPage', about: businessSchema() })}
 >
   <div class="contacts">
-    <div class="contacts__text">
-      <h1>Контакты</h1>
-      <p class="lead">Чтобы записаться на съёмку или задать вопрос, напишите мне в мессенджер или заполните форму — я свяжусь с вами в течение 1–2 рабочих дней.</p>
-      <Socials size={22} />
-      <p class="direct">
-        <a href={`mailto:${SITE.contacts.email}`}>{SITE.contacts.email}</a><br />
-        <a href={`tel:${tel}`}>{SITE.contacts.phone}</a>
-      </p>
-      <ul class="msg">
-        {SITE.socials.whatsapp && <li><a class="btn" href={SITE.socials.whatsapp} target="_blank" rel="noopener">Написать в WhatsApp</a></li>}
-        {SITE.socials.telegram && <li><a class="btn" href={SITE.socials.telegram} target="_blank" rel="noopener">Написать в Telegram</a></li>}
-      </ul>
-      <ContactForm title="Связаться со мной" />
-    </div>
     <div class="contacts__photo">
       <Image src={photo} alt={`${SITE.role} ${SITE.fullName}`} widths={[600, 1000, 1400]} sizes="(max-width: 1100px) 100vw, 40vw" />
+    </div>
+    <div class="contacts__text">
+      <h1>Контакты</h1>
+      <p class="greeting">{GREETING}</p>
+      <p class="direct">
+        <a href={`mailto:${SITE.contacts.email}`}>{SITE.contacts.email}</a>
+        <span aria-hidden="true">|</span>
+        <a href={`tel:${tel}`}>{SITE.contacts.phone}</a>
+      </p>
+      <Socials size={22} class="contacts__socials" />
+      <ContactForm title="" lead="" button="Отправить" />
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .contacts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); min-height: 100vh; }
-  .contacts__text { padding: 6rem 4rem 3rem; max-width: 760px; }
+  .contacts { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); min-height: 100vh; }
   .contacts__photo { position: relative; }
   .contacts__photo :global(img) { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; }
-  .lead { color: #555; max-width: 520px; }
-  .direct { margin: 1.5rem 0; font-size: 15px; line-height: 1.9; }
+  .contacts__text { padding: 6rem 4rem 3rem; max-width: 760px; width: 100%; margin: 0 auto; text-align: center; }
+  .greeting { border: 2px solid var(--text); padding: 1.25rem 1.75rem; margin: 0 auto 1.5rem; max-width: 560px; font-size: 14px; letter-spacing: .03em; line-height: 1.8; }
+  .direct { margin: 0 0 1rem; font-size: 14px; letter-spacing: .06em; display: flex; justify-content: center; flex-wrap: wrap; gap: .25rem .9rem; }
   .direct a { text-decoration: none; }
-  .msg { list-style: none; padding: 0; margin: 0; display: flex; gap: 12px; flex-wrap: wrap; }
-  .msg .btn { padding: .75rem 1.4rem; }
-  .contacts__text :global(.form-block) { margin-top: 3rem; }
-  .contacts__text :global(.form-block h2) { font-size: 2rem; }
-  .contacts__text :global(.grid) { grid-template-columns: 1fr; }
-  .contacts__text :global(.grid > label) { grid-column: 1 !important; grid-row: auto !important; }
+  .contacts__text :global(.contacts__socials) { justify-content: center; }
+  .contacts__text :global(.contacts__socials a) { color: var(--text); }
+  .contacts__text :global(.form-block) { margin-top: 2.5rem; text-align: left; }
+  .contacts__text :global(.form button[type=submit]) { justify-self: center; }
   @media (max-width: 1100px) {
     .contacts { grid-template-columns: 1fr; }
-    .contacts__photo { order: -1; }
     .contacts__photo :global(img) { position: static; height: 50vh; }
     .contacts__text { padding: 2.5rem 1.25rem; }
+  }
+  @media (max-width: 600px) {
+    .direct { flex-direction: column; align-items: center; }
+    .direct span { display: none; }
   }
 </style>

@@ -3,12 +3,12 @@
  * Страница вида съёмки или посадочная под город: /semka-menyu/, /predmetnaya-semka-ryazan/ …
  * Новая страница = новый файл в src/content/services/<адрес>.md
  */
-import { getEntry, render } from 'astro:content';
+import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Gallery from '../components/Gallery.astro';
 import ContactForm from '../components/ContactForm.astro';
-import { getAllServicePages, getMainServices, formatPrice } from '../lib/services';
+import { getAllServicePages, getMainServices, ancestorsOf, childrenOf, rootOf, formatPrice } from '../lib/services';
 import { graph, breadcrumbs, faqSchema } from '../lib/schema';
 import { SITE } from '../config/site';
 
@@ -20,14 +20,29 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
-const parent = d.parent ? await getEntry('services', d.parent) : undefined;
-const photos = d.photos.length ? d.photos : (parent?.data.photos ?? []);
-const others = (await getMainServices()).filter((s) => s.id !== entry.id && s.id !== d.parent);
+const all = await getAllServicePages();
+const ancestors = ancestorsOf(entry, all);
+const parent = ancestors.at(-1);
+const root = rootOf(entry, all);
+// Фото, цена и «что входит» наследуются от ближайшего родителя, где они заданы
+const lineage = [entry, ...[...ancestors].reverse()];
+const photos = lineage.find((e) => e.data.photos.length)?.data.photos ?? [];
+const price = lineage.find((e) => e.data.price)?.data.price;
+const priceUnit = lineage.find((e) => e.data.price)?.data.priceUnit ?? d.priceUnit;
+const includes = lineage.find((e) => e.data.includes.length)?.data.includes ?? [];
+const others = (await getMainServices()).filter((s) => s.id !== root.id);
 const path = `/${entry.id}/`;
 const areas = d.city ? [d.city] : SITE.cities;
 
+// Перелинковка: подстраницы этой страницы и соседние страницы того же раздела
+const children = childrenOf(entry.id, all);
+const siblings = parent ? childrenOf(parent.id, all).filter((e) => e.id !== entry.id) : [];
+const related = [...children, ...siblings];
+const relatedTopics = related.filter((e) => !e.data.city);
+const relatedCities = related.filter((e) => e.data.city);
+
 const crumbs = [
-  ...(parent ? [{ name: parent.data.title, path: `/${parent.id}/` }] : [{ name: 'Портфолио', path: '/portfolio/' }]),
+  ...(ancestors.length ? ancestors.map((a) => ({ name: a.data.title, path: `/${a.id}/` })) : [{ name: 'Портфолио', path: '/portfolio/' }]),
   { name: d.title, path },
 ];
 const nodes: Record<string, unknown>[] = [
@@ -36,16 +51,16 @@ const nodes: Record<string, unknown>[] = [
     '@type': 'Service',
     name: d.h1,
     description: d.description,
-    serviceType: parent?.data.title ?? d.title,
+    serviceType: root.data.title,
     areaServed: areas.map((name) => ({ '@type': 'City', name })),
     provider: { '@id': `${SITE.url}/#business` },
     url: new URL(path, SITE.url).href,
-    ...(d.price
+    ...(price
       ? {
           offers: {
             '@type': 'Offer',
             priceCurrency: 'RUB',
-            priceSpecification: { '@type': 'UnitPriceSpecification', price: d.price, priceCurrency: 'RUB', unitText: d.priceUnit },
+            priceSpecification: { '@type': 'UnitPriceSpecification', price, priceCurrency: 'RUB', unitText: priceUnit },
           },
         }
       : {}),
@@ -63,7 +78,7 @@ if (d.faq.length) nodes.push(faqSchema(d.faq));
         </nav>
         <h1>{d.h1}</h1>
         <p>{d.lead}</p>
-        <p class="hero__price">{formatPrice(d.price)}{d.price ? ` / ${d.priceUnit}` : ''}</p>
+        <p class="hero__price">{price ? `от ${formatPrice(price)} / ${priceUnit}` : formatPrice(price)}</p>
         <a class="btn btn--light" href="#zayavka">Оставить заявку</a>
       </div>
     </header>
@@ -71,10 +86,10 @@ if (d.faq.length) nodes.push(faqSchema(d.faq));
     <div class="page page--wide">
       <div class="intro">
         <div class="prose"><Content /></div>
-        {d.includes.length > 0 && (
+        {includes.length > 0 && (
           <aside class="includes">
             <h2>Что входит</h2>
-            <ul>{d.includes.map((i) => <li>{i}</li>)}</ul>
+            <ul>{includes.map((i) => <li>{i}</li>)}</ul>
             {d.priceNote && <p class="note">{d.priceNote}</p>}
           </aside>
         )}
@@ -94,7 +109,30 @@ if (d.faq.length) nodes.push(faqSchema(d.faq));
         </section>
       )}
 
-      <ContactForm selected={parent?.id ?? entry.id} />
+      {related.length > 0 && (
+        <section class="related">
+          {relatedTopics.length > 0 && (
+            <div>
+              <h2>{children.some((c) => !c.data.city) ? 'Направления съёмки' : 'Смотрите также'}</h2>
+              <ul class="related__list">
+                {relatedTopics.map((e) => (
+                  <li><a href={`/${e.id}/`}><span>{e.data.title}</span><small>{e.data.lead}</small></a></li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {relatedCities.length > 0 && (
+            <div>
+              <h2>Съёмка по городам</h2>
+              <ul class="related__list related__list--cities">
+                {relatedCities.map((e) => <li><a href={`/${e.id}/`}><span>{e.data.title}</span></a></li>)}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      <ContactForm selected={root.id} />
 
       {others.length > 0 && (
         <section class="others">
@@ -122,12 +160,19 @@ if (d.faq.length) nodes.push(faqSchema(d.faq));
   .intro { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 4rem; margin-bottom: 3rem; }
   .includes { border: 1px solid var(--line); padding: 1.75rem; align-self: start; }
   .includes h2 { margin-top: 0; font-size: 1.5rem; }
-  .includes ul { padding-left: 1.1rem; margin: 0; color: #444; }
+  .includes ul { padding-left: 1.1rem; margin: 0; color: var(--text); }
   .note { color: var(--muted); font-size: 13px; }
   .faq { max-width: 820px; margin: 3rem 0; }
   .faq details { border-bottom: 1px solid var(--line); padding: 1rem 0; }
   .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.3rem; }
-  .faq p { color: #444; }
+  .faq p { color: var(--text); }
+  .related { margin: 3rem 0; display: grid; gap: 2.5rem; }
+  .related__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .related__list a { display: block; height: 100%; border: 1px solid var(--line); padding: 1.1rem 1.25rem; text-decoration: none; color: var(--text); transition: border-color .2s; }
+  .related__list a:hover { border-color: var(--text); }
+  .related__list span { display: block; font-family: var(--font-serif); font-size: 1.25rem; }
+  .related__list small { display: block; margin-top: .4rem; color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .related__list--cities a { padding: .9rem 1.25rem; }
   .others { margin-top: 3rem; }
   .others ul { padding-left: 1.1rem; }
   .others a { color: var(--accent); }
