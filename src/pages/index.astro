@@ -13,7 +13,7 @@ import { graph, personSchema, businessSchema, websiteSchema } from '../lib/schem
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/slides/*.{jpg,jpeg,png,webp}', { eager: true });
 const slides = Object.keys(files).sort().map((k, i) => ({
   src: files[k].default,
-  alt: `Фотограф Кристина, Москва и Рязань — работа ${i + 1}`,
+  alt: `Фотограф Кристина, Рязань и Москва — работа ${i + 1}`,
 }));
 const services = await getMainServices();
 ---
@@ -21,18 +21,37 @@ const services = await getMainServices();
   <Slideshow slides={slides}>
     <div class="hero-caption">
       <p class="hero-caption__name">{SITE.role} {SITE.fullName}</p>
-      <p>Москва · Рязань</p>
+      <p>Рязань · Москва</p>
     </div>
     <a class="scroll-hint" href="#uslugi" aria-label="Листать вниз к услугам">↓</a>
   </Slideshow>
 
   <div class="page page--wide" id="uslugi">
-    <h1>Фотосъёмка для бизнеса в Москве и Рязани</h1>
+    <h1>Фотограф в Рязани и Москве</h1>
     <p class="intro">
-      Я — фотограф Кристина. Снимаю меню для ресторанов и кафе и делаю предметные фото товаров
-      для маркетплейсов, сайтов и рекламы. Работаю в Москве и Рязани, на вашей площадке или в студии.
+      Я — Кристина, фотограф из Рязани. Снимаю для ресторанов, кафе и бизнеса: меню и блюда, товары
+      для маркетплейсов и сайтов, репортажи с открытий, банкетов и корпоративов. В Рязани работаю
+      каждый день, в Москву приезжаю на съёмки — на вашу площадку или в студию.
     </p>
     <ServiceCards />
+
+    <section class="city">
+      <h2>Фотограф в Рязани</h2>
+      <p>
+        Рязань — мой город, поэтому выезд по городу всегда входит в стоимость, а дату съёмки можно
+        подобрать быстро, даже к срочному открытию. Снимаю <a href="/semka-menyu-ryazan/">меню для ресторанов
+        и кафе Рязани</a>, <a href="/predmetnaya-semka-ryazan/">предметную съёмку товаров</a>
+        и <a href="/fotosemka-dlya-marketpleysov-ryazan/">фото для маркетплейсов</a>, а также
+        <a href="/fotograf-na-meropriyatie-ryazan/">мероприятия</a>: открытия, банкеты, мастер-классы и праздники компаний.
+      </p>
+      <h2>Фотограф в Москве</h2>
+      <p>
+        В Москве я работаю в своей нише: фуд-съёмка, предметная съёмка и мероприятия ресторанов и небольших компаний.
+        Смотрите <a href="/semka-menyu-moskva/">фуд-фотограф в Москве</a>,
+        <a href="/predmetnaya-semka-moskva/">предметная съёмка в Москве</a> и
+        <a href="/fotograf-na-meropriyatie-moskva/">фотограф на мероприятие в Москве</a>.
+      </p>
+    </section>
 
     <section class="prices">
       <h2>Стоимость</h2>
@@ -70,6 +89,8 @@ const services = await getMainServices();
   @media (prefers-reduced-motion: reduce) { .scroll-hint { animation: none; } }
   .page--wide { max-width: 1400px; }
   .intro { max-width: 760px; color: var(--text); margin-bottom: 3rem; }
+  .city { max-width: 760px; margin-top: 4rem; }
+  .city a { color: var(--accent); }
   .prices { margin: 4rem 0; max-width: 760px; }
   .prices table { width: 100%; border-collapse: collapse; }
   .prices th, .prices td { text-align: left; padding: 14px 0; border-bottom: 1px solid var(--line); font-weight: 400; }
