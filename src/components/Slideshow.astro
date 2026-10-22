@@ -30,7 +30,10 @@ const { slides, interval = 5000 } = Astro.props;
 </section>
 
 <style>
-  .slideshow { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #ddd; }
+  /* svh — «малая» высота экрана: не меняется, когда в мобильном Safari/Chrome
+     при прокрутке прячется или появляется адресная строка. С dvh высота слайдера
+     пересчитывалась на ходу, и весь контент под ним дёргался. */
+  .slideshow { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #ddd; }
   .slide { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.4s ease; }
   .slide.active { opacity: 1; }
   .slide :global(img) { width: 100%; height: 100%; object-fit: cover; }
@@ -43,7 +46,7 @@ const { slides, interval = 5000 } = Astro.props;
   .slideshow:hover .nav-btn, .nav-btn:focus-visible { opacity: .85; }
   .prev { left: 12px; } .next { right: 12px; }
   @media (max-width: 900px) {
-    .slideshow { height: calc(100dvh - 64px); }
+    .slideshow { height: calc(100vh - 64px); height: calc(100svh - 64px); }
     .nav-btn { opacity: .7; }
   }
   @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
