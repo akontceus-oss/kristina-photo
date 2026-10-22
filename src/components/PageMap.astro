@@ -1,0 +1,35 @@
+---
+/**
+ * ВРЕМЕННЫЙ технический блок: карта всех страниц сайта внизу каждой страницы.
+ * Чтобы убрать — удалить этот файл и строку <PageMap /> в Footer.astro.
+ */
+import { NAV } from '../config/nav';
+import { getAllServicePages, ancestorsOf } from '../lib/services';
+import { getArticles } from '../lib/articles';
+
+const pages = await getAllServicePages();
+const label = (p: (typeof pages)[number]) => [...ancestorsOf(p, pages).map((a) => a.data.title), p.data.title].join(' → ');
+const services = pages
+  .map((p) => ({ href: `/${p.id}/`, label: label(p), draft: p.data.draft }))
+  .sort((a, b) => a.label.localeCompare(b.label, 'ru'));
+const articles = (await getArticles()).map((a) => ({ href: `/blog/${a.id}/`, label: a.data.title }));
+const main = [{ label: 'Главная', href: '/' }, ...NAV, { label: 'Политика конфиденциальности', href: '/privacy/' }, { label: 'Согласие на обработку данных', href: '/soglasie/' }];
+---
+<details class="pagemap" open>
+  <summary>Карта страниц (временно) — {main.length + services.length + articles.length}</summary>
+  <div class="pagemap__cols">
+    <div><h4>Основные</h4><ul>{main.map((p) => <li><a href={p.href}>{p.label}</a> <code>{p.href}</code></li>)}</ul></div>
+    <div><h4>Услуги и посадочные ({services.length})</h4><ul>{services.map((p) => <li><a href={p.href}>{p.label}</a>{p.draft && ' (черновик)'} <code>{p.href}</code></li>)}</ul></div>
+    <div><h4>Статьи ({articles.length})</h4><ul>{articles.map((p) => <li><a href={p.href}>{p.label}</a> <code>{p.href}</code></li>)}</ul></div>
+  </div>
+</details>
+
+<style>
+  .pagemap { margin: 2rem auto 0; max-width: 1200px; text-align: left; border-top: 1px dashed var(--line); padding-top: 1rem; }
+  .pagemap summary { cursor: pointer; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .pagemap__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+  .pagemap h4 { margin: 0 0 .5rem; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
+  .pagemap ul { list-style: none; padding: 0; margin: 0; }
+  .pagemap li { padding: 2px 0; font-size: 12px; }
+  .pagemap code { color: var(--muted); font-size: 11px; }
+</style>
