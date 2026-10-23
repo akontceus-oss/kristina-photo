@@ -27,7 +27,7 @@ const { yandexMetrikaId, googleAnalyticsId } = SITE.analytics;
           m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
           m[i].l = 1 * new Date();
           k = e.createElement(t); a = e.getElementsByTagName(t)[0]; k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
-        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + ym, 'ym');
         window.__ymId = Number(ym);
         window.ym(Number(ym), 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true });
       }
@@ -51,6 +51,15 @@ const { yandexMetrikaId, googleAnalyticsId } = SITE.analytics;
       if (!(t instanceof Element)) return;
       if (t.closest('[data-cookie-accept]')) { save('all'); box.hidden = true; loadAnalytics(); }
       if (t.closest('[data-cookie-decline]')) { save('necessary'); box.hidden = true; }
+      // Цели Метрики: клики по телефону и мессенджерам
+      var link = t.closest('a[href]');
+      if (link && window.ym && window.__ymId) {
+        var href = link.getAttribute('href') || '';
+        var goal = href.indexOf('tel:') === 0 ? 'click_phone'
+          : href.indexOf('t.me/') !== -1 ? 'click_telegram'
+          : href.indexOf('wa.me/') !== -1 ? 'click_whatsapp' : '';
+        if (goal) window.ym(window.__ymId, 'reachGoal', goal);
+      }
       if (t.closest('[data-cookie-reset]')) { e.preventDefault(); try { localStorage.removeItem(KEY); } catch (err) {} box.hidden = false; }
     });
   })();
