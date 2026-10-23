@@ -44,7 +44,7 @@ export const SITE = {
 
   /** Аналитика. Скрипты подключаются только после согласия на cookie. */
   analytics: {
-    yandexMetrikaId: '',
+    yandexMetrikaId: '113761223',
     googleAnalyticsId: '',
   },
 
