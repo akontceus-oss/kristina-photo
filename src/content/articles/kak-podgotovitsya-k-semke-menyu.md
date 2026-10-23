@@ -5,8 +5,8 @@ description: 'Чек-лист подготовки к фотосъёмке ме�
 lead: 'Хорошая подготовка экономит часы съёмки и делает фото заметно лучше. Вот чек-лист, который я присылаю заведениям перед съёмкой.'
 date: 2026-10-22
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-7.jpg
-  alt: 'Подготовка блюд к фотосъёмке меню'
+  src: ../../assets/services/semka-menyu/hleb-na-zakvaske.jpg
+  alt: 'Подготовка выпечки к фотосъёмке меню'
 services: ['semka-menyu', 'fotosemka-blyud-dlya-dostavki', 'semka-menyu-ryazan', 'semka-menyu-moskva']
 faq:
   - q: 'За сколько дней начинать подготовку?'

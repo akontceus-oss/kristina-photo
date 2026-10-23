@@ -7,8 +7,8 @@ lead: 'Фото тортов, пирожных и наборов десерто�
 parent: semka-menyu
 order: 30
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-4.jpg
-  alt: 'Фотосъёмка десертов для кондитерской'
+  src: ../../assets/services/semka-menyu/vypechka-s-klubnikoy.jpg
+  alt: 'Десерты из слоёного теста с клубникой'
 faq:
   - q: 'Снимаете торты в разрезе?'
     a: 'Да, разрез — один из самых важных кадров: он показывает начинку и бисквит. Для него нужен отдельный торт или его часть.'

@@ -7,8 +7,8 @@ lead: 'Живые кадры коллектива без постановки: �
 parent: reportazhnaya-semka
 order: 20
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-4.jpg
-  alt: 'Фотограф на корпоратив компании'
+  src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-1.jpg
+  alt: 'Участник встречи за столом — репортаж с мероприятия'
 faq:
   - q: 'Сколько людей вы снимаете?'
     a: 'Мой формат — компании до 150 человек. Для больших событий лучше команда из нескольких фотографов.'

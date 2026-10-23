@@ -7,8 +7,8 @@ lead: 'Утренник, номера детей, вручение диплом�
 parent: fotograf-na-vypusknoy-ryazan
 order: 10
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-4.jpg
-  alt: 'Фотограф на выпускной в детском саду в Рязани'
+  src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-1.jpg
+  alt: 'Дети на детском празднике'
 faq:
   - q: 'Сколько длится съёмка выпускного в саду?'
     a: 'Обычно 1,5–2 часа: утренник, вручение дипломов, общее фото и немного времени на портреты детей.'

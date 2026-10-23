@@ -13,17 +13,15 @@ includes:
   - 'Цветокоррекция и ретушь отобранных кадров'
   - 'Форматы под меню, доставку, сайт и соцсети'
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-1.jpg
-  alt: 'Съёмка меню для ресторана — обложка'
+  src: ../../assets/services/semka-menyu/vypechka-s-klubnikoy.jpg
+  alt: 'Слоёная выпечка с клубникой — фуд-съёмка для меню'
 photos:
-  - { src: ../../assets/services/semka-menyu/semka-menyu-1.jpg, alt: 'Съёмка блюд для меню ресторана' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-2.jpg, alt: 'Фото блюда для доставки' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-3.jpg, alt: 'Фуд-съёмка напитков для кафе' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-4.jpg, alt: 'Съёмка десертов для меню' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-5.jpg, alt: 'Фото блюд для сайта ресторана' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-6.jpg, alt: 'Фуд-фото для соцсетей' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-7.jpg, alt: 'Съёмка меню на площадке ресторана' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-8.jpg, alt: 'Фото блюд для агрегаторов доставки' }
+  - { src: ../../assets/services/semka-menyu/vypechka-s-klubnikoy.jpg, alt: 'Слоёная выпечка с клубникой' }
+  - { src: ../../assets/services/semka-menyu/kruassan.jpg, alt: 'Круассан крупным планом' }
+  - { src: ../../assets/services/semka-menyu/hleb-na-zakvaske.jpg, alt: 'Хлеб на закваске для меню пекарни' }
+  - { src: ../../assets/services/semka-menyu/pekarnya-stellazh-s-hlebom.jpg, alt: 'Свежий хлеб на стеллаже в пекарне' }
+  - { src: ../../assets/services/semka-menyu/klubnika-dlya-desertov.jpg, alt: 'Клубника для десертов на кухне' }
+  - { src: ../../assets/services/semka-menyu/kofeynya-interer.jpg, alt: 'Интерьер кофейни с витриной напитков' }
 faq:
   - q: 'Сколько блюд можно снять за час?'
     a: 'В среднем 8–15 позиций, в зависимости от сложности подачи и количества ракурсов. Точнее оценю по вашему списку блюд.'

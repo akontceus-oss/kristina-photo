@@ -12,12 +12,13 @@ includes:
   - 'Единый стиль для меню, сайта и маркетплейсов'
   - 'Ретушь и подготовка форматов'
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-4.jpg
-  alt: 'Комплексная съёмка меню и товаров'
+  src: ../../assets/services/semka-menyu/pekarnya-stellazh-s-hlebom.jpg
+  alt: 'Съёмка продукции пекарни: хлеб и выпечка'
 photos:
-  - { src: ../../assets/services/semka-menyu/semka-menyu-4.jpg, alt: 'Съёмка блюд и упаковки' }
+  - { src: ../../assets/services/semka-menyu/pekarnya-stellazh-s-hlebom.jpg, alt: 'Продукция пекарни на стеллаже' }
+  - { src: ../../assets/services/semka-menyu/hleb-na-zakvaske.jpg, alt: 'Хлеб на закваске' }
   - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-4.jpg, alt: 'Предметная съёмка продукции ресторана' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-5.jpg, alt: 'Фото меню и фирменных товаров' }
+  - { src: ../../assets/services/semka-menyu/kofeynya-interer.jpg, alt: 'Витрина с напитками в кофейне' }
 ---
 Ресторану, кафе или производителю еды часто нужны два вида фото сразу: аппетитные блюда для меню и доставки и аккуратные снимки упаковки, соусов, полуфабрикатов, подарочных наборов или мерча для сайта и маркетплейсов. Если снимать их у разных фотографов, получаются два разных стиля, две подготовки и двойные расходы на выезд.
 

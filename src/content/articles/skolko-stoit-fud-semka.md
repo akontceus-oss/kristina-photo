@@ -5,8 +5,8 @@ description: 'Из чего складывается цена фуд-съёмк�
 lead: 'Объясняю, как формируется цена фотосъёмки меню, сколько блюд реально снять за час и за что не стоит переплачивать.'
 date: 2026-10-22
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-2.jpg
-  alt: 'Фуд-съёмка блюда для меню — стоимость'
+  src: ../../assets/services/semka-menyu/kruassan.jpg
+  alt: 'Фуд-съёмка выпечки для меню — стоимость'
 services: ['semka-menyu', 'semka-menyu-moskva', 'semka-menyu-ryazan', 'fotosemka-blyud-dlya-dostavki']
 faq:
   - q: 'Что выгоднее — оплата за час или за блюдо?'

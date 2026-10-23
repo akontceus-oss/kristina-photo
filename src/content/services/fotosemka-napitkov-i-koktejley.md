@@ -7,8 +7,8 @@ lead: 'Коктейли, лимонады и барная карта — кад�
 parent: semka-menyu
 order: 40
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-6.jpg
-  alt: 'Фотосъёмка коктейлей для бара'
+  src: ../../assets/services/semka-menyu/kofeynya-interer.jpg
+  alt: 'Витрина с напитками в кофейне'
 faq:
   - q: 'Нужен ли бармен на съёмке?'
     a: 'Да, лучше всего, если коктейли готовит ваш бармен: так подача совпадёт с реальной, а кадры процесса получатся живыми.'

@@ -8,8 +8,8 @@ city: Москва
 parent: semka-menyu
 order: 91
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-5.jpg
-  alt: 'Фуд-съёмка блюд ресторана в Москве'
+  src: ../../assets/services/semka-menyu/kruassan.jpg
+  alt: 'Круассан крупным планом — фуд-фотограф в Москве'
 faq:
   - q: 'Выезд по Москве платный?'
     a: 'Выезд в пределах МКАД входит в стоимость. Съёмку в Подмосковье обсудим отдельно, в зависимости от расстояния.'

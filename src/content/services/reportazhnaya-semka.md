@@ -12,13 +12,31 @@ includes:
   - 'Цветокоррекция всех отобранных кадров'
   - 'Экспресс-подборка для соцсетей на следующий день'
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-6.jpg
-  alt: 'Репортажная съёмка мероприятия в ресторане'
+  src: ../../assets/services/reportazhnaya-semka/karting-1.jpg
+  alt: 'Репортаж с мероприятия в картинг-клубе'
 photos:
-  - { src: ../../assets/services/semka-menyu/semka-menyu-6.jpg, alt: 'Репортаж с мероприятия в ресторане' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-7.jpg, alt: 'Фотограф на открытие ресторана' }
-  - { src: ../../assets/services/semka-menyu/semka-menyu-3.jpg, alt: 'Съёмка фуршета и подачи блюд' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-3.jpg, alt: 'Детали оформления мероприятия' }
+  - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-1.jpg, alt: 'Участник разговорного клуба за столом' }
+  - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-2.jpg, alt: 'Участница встречи слушает собеседника' }
+  - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-3.jpg, alt: 'Ребёнок на мероприятии' }
+  - { src: ../../assets/services/reportazhnaya-semka/portret-uchastnika-chb.jpg, alt: 'Чёрно-белый портрет участника мероприятия' }
+  - { src: ../../assets/services/reportazhnaya-semka/karting-1.jpg, alt: 'Мероприятие в картинг-клубе' }
+  - { src: ../../assets/services/reportazhnaya-semka/karting-2.jpg, alt: 'Заезд на картингах' }
+  - { src: ../../assets/services/reportazhnaya-semka/karting-3.jpg, alt: 'Девочка за рулём карта' }
+  - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-1.jpg, alt: 'Детский праздник в картинг-клубе' }
+  - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-2.jpg, alt: 'Дети в шлемах перед заездом' }
+  - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-3.jpg, alt: 'Ребёнок на детском карте' }
+  - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-4.jpg, alt: 'Детский заезд на картингах' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-1.jpg, alt: 'Скрипачка и пианист' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-2.jpg, alt: 'Скрипачка у рояля' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-3.jpg, alt: 'Портрет музыкантов на сцене' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-4.jpg, alt: 'Пианист у рояля' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-5.jpg, alt: 'Рояль и скрипка на сцене' }
+  - { src: ../../assets/services/reportazhnaya-semka/detskaya-futbolnaya-komanda.jpg, alt: 'Детская футбольная команда' }
+  - { src: ../../assets/services/reportazhnaya-semka/manezh-1.jpg, alt: 'Крытый футбольный манеж' }
+  - { src: ../../assets/services/reportazhnaya-semka/manezh-2.jpg, alt: 'Трибуны футбольного манежа' }
+  - { src: ../../assets/services/reportazhnaya-semka/manezh-3.jpg, alt: 'Поле и трибуны манежа' }
+  - { src: ../../assets/services/reportazhnaya-semka/manezh-4.jpg, alt: 'Футбольный манеж изнутри' }
+  - { src: ../../assets/services/reportazhnaya-semka/manezh-5.jpg, alt: 'Разметка поля в манеже' }
 faq:
   - q: 'Сколько стоит репортажная съёмка?'
     a: 'Оплата почасовая, минимальный заказ — 2 часа. Точную стоимость рассчитаю по формату, длительности и месту мероприятия.'

@@ -7,8 +7,8 @@ lead: 'Продукт в упаковке на белом фоне и аппет
 parent: semka-menyu-i-predmetnaya
 order: 10
 cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-2.jpg
-  alt: 'Фотосъёмка продуктов питания в упаковке'
+  src: ../../assets/services/semka-menyu/klubnika-dlya-desertov.jpg
+  alt: 'Нарезанная клубника — съёмка продуктов питания'
 faq:
   - q: 'Снимаете фермерскую продукцию?'
     a: 'Да: мёд, сыры, молочные продукты, мясные деликатесы, варенье, чай, сладости. Снимаем и упаковку, и продукт без неё.'

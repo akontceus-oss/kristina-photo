@@ -8,8 +8,8 @@ city: Рязань
 parent: reportazhnaya-semka
 order: 80
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-6.jpg
-  alt: 'Фотограф на выпускной в Рязани'
+  src: ../../assets/services/reportazhnaya-semka/detskaya-futbolnaya-komanda.jpg
+  alt: 'Детская команда на общем фото'
 faq:
   - q: 'Когда бронировать фотографа на выпускной?'
     a: 'Лучше в январе — марте. Даты выпускных совпадают у большинства школ и садов, и в мае — июне свободных дней почти не остаётся.'
