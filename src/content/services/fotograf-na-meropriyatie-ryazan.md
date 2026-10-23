@@ -8,8 +8,8 @@ city: Рязань
 parent: reportazhnaya-semka
 order: 90
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-8.jpg
-  alt: 'Фотограф на мероприятие в Рязани'
+  src: ../../assets/services/reportazhnaya-semka/karting-2.jpg
+  alt: 'Фотограф на мероприятие в Рязани — праздник в картинг-клубе'
 faq:
   - q: 'Выезд по Рязани платный?'
     a: 'Нет, выезд по городу входит в стоимость. Выезд в область обсуждаем отдельно.'

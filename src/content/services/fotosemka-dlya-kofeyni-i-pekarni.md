@@ -7,8 +7,8 @@ lead: 'Кофе, выпечка, десерты и витрина — фото �
 parent: semka-menyu
 order: 20
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-3.jpg
-  alt: 'Фотосъёмка напитков и выпечки для кофейни'
+  src: ../../assets/services/semka-menyu/pekarnya-stellazh-s-hlebom.jpg
+  alt: 'Стеллаж со свежим хлебом в пекарне'
 faq:
   - q: 'Можно снимать до открытия?'
     a: 'Да, утренняя съёмка до открытия — частый вариант для кофеен: свежая выпечка, пустой зал, никто не мешает.'

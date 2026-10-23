@@ -8,8 +8,8 @@ city: Москва
 parent: reportazhnaya-semka
 order: 91
 cover:
-  src: ../../assets/services/semka-menyu/semka-menyu-5.jpg
-  alt: 'Фотограф на мероприятие в Москве'
+  src: ../../assets/services/reportazhnaya-semka/muzykanty-1.jpg
+  alt: 'Скрипачка и пианист — съёмка музыкантов'
 faq:
   - q: 'Сколько стоит фотограф на мероприятие в Москве?'
     a: 'Оплата почасовая, минимальный заказ — 2 часа. Стоимость зависит от длительности и формата; рассчитаю по вашему таймингу.'
