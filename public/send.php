@@ -19,8 +19,6 @@ function reply(int $code, array $data): void {
     exit;
 }
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') reply(405, ['ok' => false, 'error' => 'method']);
-
 $config = [
     'mail_to' => '',            // куда слать заявки; несколько адресов — через запятую
     'mail_from' => '',          // от кого (ящик на домене сайта, например noreply@домен)
@@ -28,7 +26,48 @@ $config = [
     'telegram_chat_id' => '',   // id чата/пользователя, куда бот пишет; несколько — через запятую
 ];
 $configFile = dirname(__DIR__) . '/form-config.php';
-if (is_file($configFile)) $config = array_merge($config, (array) require $configFile);
+$hasConfig = is_file($configFile);
+if ($hasConfig) $config = array_merge($config, (array) require $configFile);
+
+function telegram(string $token, string $method, array $fields): array {
+    $ch = curl_init('https://api.telegram.org/bot' . $token . '/' . $method);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $fields,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+    ]);
+    $res = curl_exec($ch);
+    $err = $res === false ? curl_error($ch) : '';
+    curl_close($ch);
+    if ($res === false) return ['ok' => false, 'description' => 'curl: ' . $err];
+    return (array) (json_decode((string) $res, true) ?? ['ok' => false, 'description' => 'bad response']);
+}
+
+// Самопроверка: открыть в браузере /send.php?check — покажет, найден ли файл настроек,
+// видит ли сервер Telegram и есть ли бот в чате. Токен и данные заявок не выводятся.
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' && isset($_GET['check'])) {
+    $out = [
+        'config_file' => $hasConfig ? 'найден' : 'НЕ найден: ' . $configFile,
+        'curl' => function_exists('curl_init') ? 'есть' : 'НЕТ',
+        'mail' => $config['mail_to'] !== '' ? 'настроена' : 'не настроена',
+    ];
+    if ($config['telegram_bot_token'] === '' || $config['telegram_chat_id'] === '') {
+        $out['telegram'] = 'не настроен (пустой токен или chat_id)';
+    } elseif (function_exists('curl_init')) {
+        $me = telegram($config['telegram_bot_token'], 'getMe', []);
+        $out['bot'] = $me['ok'] ?? false ? '@' . ($me['result']['username'] ?? '?') : 'ошибка: ' . ($me['description'] ?? '?');
+        foreach (array_filter(array_map('trim', explode(',', (string) $config['telegram_chat_id']))) as $chatId) {
+            $chat = telegram($config['telegram_bot_token'], 'getChat', ['chat_id' => $chatId]);
+            $out['chat ' . $chatId] = $chat['ok'] ?? false ? 'ок: ' . ($chat['result']['title'] ?? $chat['result']['first_name'] ?? '') : 'ошибка: ' . ($chat['description'] ?? '?');
+        }
+    }
+    echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    exit;
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') reply(405, ['ok' => false, 'error' => 'method']);
+if (!$hasConfig) reply(500, ['ok' => false, 'error' => 'config']);
 
 // Антиспам: скрытое поле и слишком быстрая отправка
 if (!empty($_POST['website'])) reply(200, ['ok' => true]);
@@ -45,6 +84,11 @@ $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['date'] ?? '')) ? d
 $page = $clean('page', 200);
 
 if ($name === '' || $phone === '') reply(422, ['ok' => false, 'error' => 'required']);
+// Телефон: российский номер, +7 и 10 цифр
+$digits = preg_replace('/\D/', '', $phone);
+if (strlen($digits) === 11 && $digits[0] === '8') $digits = '7' . substr($digits, 1);
+if (strlen($digits) !== 11 || $digits[0] !== '7') reply(422, ['ok' => false, 'error' => 'phone']);
+$phone = sprintf('+7 (%s) %s-%s-%s', substr($digits, 1, 3), substr($digits, 4, 3), substr($digits, 7, 2), substr($digits, 9, 2));
 if (($_POST['consent'] ?? '') !== '1') reply(422, ['ok' => false, 'error' => 'consent']);
 
 $host = preg_replace('/[^a-z0-9.\-]/i', '', $_SERVER['HTTP_HOST'] ?? 'site');
@@ -75,10 +119,9 @@ if ($config['mail_to'] !== '') {
 
 if ($config['telegram_bot_token'] !== '' && $config['telegram_chat_id'] !== '') {
     $h = fn(string $v) => htmlspecialchars($v, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    $tel = preg_replace('/[^\d+]/', '', $phone);
     $html = "<b>Новая заявка с сайта {$h($host)}</b>\n\n"
         . "<b>Имя:</b> {$h($name)}\n"
-        . "<b>Телефон:</b> " . ($tel !== '' ? "<a href=\"tel:{$h($tel)}\">{$h($phone)}</a>" : $h($phone)) . "\n"
+        . "<b>Телефон:</b> <a href=\"tel:+{$digits}\">{$h($phone)}</a>\n"
         . ($email !== '' ? "<b>Почта:</b> {$h($email)}\n" : '')
         . "<b>Вид съёмки:</b> {$h($service)}\n"
         . ($date !== '' ? "<b>Дата съёмки:</b> {$date}\n" : '')
@@ -86,18 +129,10 @@ if ($config['telegram_bot_token'] !== '' && $config['telegram_chat_id'] !== '') 
         . "<b>Страница:</b> {$h($page)}\n"
         . "<i>Согласие на обработку ПД: да, " . date('d.m.Y H:i') . "</i>";
     foreach (array_filter(array_map('trim', explode(',', (string) $config['telegram_chat_id']))) as $chatId) {
-        $ch = curl_init('https://api.telegram.org/bot' . $config['telegram_bot_token'] . '/sendMessage');
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => ['chat_id' => $chatId, 'text' => $html, 'parse_mode' => 'HTML', 'disable_web_page_preview' => 'true'],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-        ]);
-        $res = curl_exec($ch);
-        $ok = $res !== false && (json_decode((string) $res, true)['ok'] ?? false);
-        if (!$ok) error_log('send.php: telegram ' . $chatId . ': ' . ($res === false ? curl_error($ch) : $res));
+        $res = telegram($config['telegram_bot_token'], 'sendMessage', ['chat_id' => $chatId, 'text' => $html, 'parse_mode' => 'HTML', 'disable_web_page_preview' => 'true']);
+        $ok = (bool) ($res['ok'] ?? false);
+        if (!$ok) error_log('send.php: telegram ' . $chatId . ': ' . ($res['description'] ?? '?'));
         $sent = $ok || $sent;
-        curl_close($ch);
     }
 }
 

@@ -36,7 +36,7 @@ const services = await getMainServices();
       </label>
       <label class="f-phone">
         <span>Телефон *</span>
-        <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40" placeholder="+7" />
+        <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="18" placeholder="+7 (900) 123-45-67" pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" data-phone />
       </label>
       <label class="f-date">
         <span>Дата съёмки</span>
@@ -83,6 +83,7 @@ const services = await getMainServices();
     background: transparent; color: var(--text); border-radius: 0;
   }
   input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--text); }
+  .form.tried input:invalid { border-bottom-color: #a33; }
   textarea { resize: vertical; }
   .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text); }
   .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); margin: 0; }
@@ -114,11 +115,53 @@ const services = await getMainServices();
     const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const say = (text: string, ok: boolean) => { status.textContent = text; status.className = 'form__status ' + (ok ? 'ok' : 'err'); };
 
+    // Телефон: всегда +7 и маска +7 (900) 123-45-67, лишние цифры не вводятся
+    const phone = form.querySelector<HTMLInputElement>('[data-phone]')!;
+    const phoneDigits = (v: string) => {
+      let d = v.replace(/\D/g, '');
+      if (v.trimStart().startsWith('+7')) d = d.slice(1);
+      if (d.length === 11 && /^[78]/.test(d)) d = d.slice(1); // вставили 8XXXXXXXXXX или 7XXXXXXXXXX
+      return d.slice(0, 10);
+    };
+    const phoneFormat = (d: string) => {
+      let s = '+7 ';
+      if (d.length) s += '(' + d.slice(0, 3);
+      if (d.length >= 3) s += ') ';
+      if (d.length > 3) s += d.slice(3, 6);
+      if (d.length > 6) s += '-' + d.slice(6, 8);
+      if (d.length > 8) s += '-' + d.slice(8, 10);
+      return s;
+    };
+    // Сколько цифр номера (без 7 из «+7») стоит до курсора
+    const digitsBeforeCaret = () => phoneDigits(phone.value.slice(0, phone.selectionStart ?? phone.value.length)).length;
+    const setPhone = (d: string, pos: number) => {
+      phone.value = phoneFormat(d);
+      let caret = 3;
+      for (let seen = 0; caret < phone.value.length && seen < pos; caret++) if (/\d/.test(phone.value[caret])) seen++;
+      if (pos >= d.length) caret = phone.value.length;
+      phone.setSelectionRange(caret, caret);
+    };
+    phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7 '; });
+    phone.addEventListener('blur', () => { if (phone.value.trim() === '+7') phone.value = ''; });
+    phone.addEventListener('input', () => setPhone(phoneDigits(phone.value), digitsBeforeCaret()));
+    // Backspace перед скобкой, пробелом или дефисом стирает цифру, а не знак маски
+    phone.addEventListener('keydown', (e) => {
+      const at = phone.selectionStart ?? 0;
+      if (e.key !== 'Backspace' || at !== phone.selectionEnd || at <= 3 || /\d/.test(phone.value[at - 1])) return;
+      e.preventDefault();
+      const d = phoneDigits(phone.value), pos = digitsBeforeCaret();
+      if (pos > 0) setPhone(d.slice(0, pos - 1) + d.slice(pos), pos - 1);
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      form.classList.add('tried');
       if (!form.checkValidity()) {
         const consent = form.querySelector<HTMLInputElement>('[name=consent]')!;
-        say(consent.checked ? 'Заполните имя и телефон.' : 'Нужно согласие на обработку персональных данных.', false);
+        const name = form.querySelector<HTMLInputElement>('[name=name]')!;
+        if (!name.value.trim()) say('Укажите, как к вам обращаться.', false);
+        else if (!phone.validity.valid) say('Проверьте номер телефона: после +7 нужно 10 цифр.', false);
+        else say(consent.checked ? 'Проверьте заполнение формы.' : 'Нужно согласие на обработку персональных данных.', false);
         return;
       }
       btn.disabled = true;
@@ -131,8 +174,9 @@ const services = await getMainServices();
         ts.value = String(Date.now());
         say('Спасибо! Заявка отправлена, я скоро свяжусь с вами.', true);
         (window as any).ym?.((window as any).__ymId, 'reachGoal', 'form_sent');
-      } catch {
-        say('Не получилось отправить. Напишите мне в мессенджер — ссылки на странице «Контакты».', false);
+      } catch (err) {
+        if ((err as Error).message === 'phone') say('Проверьте номер телефона: после +7 нужно 10 цифр.', false);
+        else say('Не получилось отправить. Напишите мне в мессенджер — ссылки на странице «Контакты».', false);
       } finally {
         btn.disabled = false;
       }
