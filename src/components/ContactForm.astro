@@ -11,12 +11,9 @@ interface Props {
 const { button = 'Отправить запрос', selected } = Astro.props;
 const services = await getMainServices();
 ---
-<section class="form-block" id="zayavka" aria-label="Запись на съёмку">
+<section class="form-block" id="zayavka" aria-labelledby="zayavka-title">
+  <h2 class="form-block__title" id="zayavka-title">Запись на съёмку</h2>
   <form class="form" method="post" action={SITE.form.endpoint} data-form novalidate>
-    <label class="check f-booking">
-      <input type="checkbox" name="booking" value="1" />
-      <span>Запись на съёмку?</span>
-    </label>
     <label class="field">
       <span>Ваше имя *</span>
       <input name="name" type="text" autocomplete="name" required maxlength="100" />
@@ -92,7 +89,7 @@ const services = await getMainServices();
   .field > span { display: block; font-size: 17px; letter-spacing: .06em; line-height: 1.3; }
   .field input, .field select, .field textarea {
     display: block; width: 100%; border: 0; border-bottom: 1.5px solid #3a3a3a; border-radius: 0;
-    padding: 10px 0 8px; font: inherit; font-size: 17px; letter-spacing: .03em; color: var(--text);
+    padding: 3px 0 5px; font: inherit; font-size: 17px; letter-spacing: .03em; color: var(--text);
     background: transparent; -webkit-appearance: none; appearance: none;
   }
   .field textarea { resize: vertical; min-height: 110px; }
@@ -100,17 +97,16 @@ const services = await getMainServices();
   .form.tried .field :invalid { border-bottom-color: #a33; }
   /* Пустая дата без «дд.мм.гггг» — подсказок в полях нет */
   .field input[type='date']:invalid:not(:focus)::-webkit-datetime-edit { color: transparent; }
-  .field input[type='date'] { min-height: 40px; }
+  .field input[type='date'] { min-height: 30px; }
   .field--select { position: relative; }
   .field--select select { cursor: pointer; padding-right: 24px; }
   .field--select::after {
-    content: ''; position: absolute; right: 6px; bottom: 20px; width: 7px; height: 7px; pointer-events: none;
+    content: ''; position: absolute; right: 6px; bottom: 14px; width: 7px; height: 7px; pointer-events: none;
     border-right: 1.5px solid #3a3a3a; border-bottom: 1.5px solid #3a3a3a; transform: rotate(45deg);
   }
   .check { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
   .check input { width: 16px; height: 16px; margin: 3px 0 0; accent-color: #3a3a3a; flex: none; }
-  .f-booking { font-size: 16px; letter-spacing: .06em; }
-  .f-booking input { margin-top: 2px; }
+  .form-block__title { margin: 0; text-align: center; font-size: clamp(2.2rem, 4.5vw, 3rem); letter-spacing: .02em; }
   .consent { margin: 26px 0 26px; font-size: 13px; line-height: 1.6; letter-spacing: .03em; color: #555; }
   .consent a { color: inherit; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
