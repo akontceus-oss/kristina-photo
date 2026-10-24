@@ -86,7 +86,14 @@ const isActive = (href: string): boolean =>
   .sidebar :global(.top-socials) { display: none; }
 
   @media (max-width: 900px) {
-    .sidebar { inset: 0 0 auto 0; width: 100%; padding: 0 20px; height: 64px; border-bottom: 1px solid var(--line); }
+    /* На телефоне шапка липкая (sticky), а не fixed. В мобильном Safari fixed-шапку
+       при прокрутке дёргает: адресная строка то сворачивается, то разворачивается,
+       и браузер переставляет fixed-элементы рывками. Sticky-шапка движется вместе
+       со страницей и стоит на месте ровно. */
+    .sidebar {
+      position: sticky; inset: 0 auto auto 0; width: 100%; padding: 0 20px; height: 64px;
+      overflow: visible; border-bottom: 1px solid var(--line);
+    }
     .sidebar__top { height: 64px; }
     .logo { font-size: 26px; }
     .sidebar :global(.top-socials) { display: flex; flex-wrap: nowrap; gap: 16px; margin-left: auto; margin-right: 6px; }
