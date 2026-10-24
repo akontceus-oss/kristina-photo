@@ -78,14 +78,16 @@ $clean = fn(string $k, int $max) => trim(mb_substr(strip_tags((string) ($_POST[$
 $name = $clean('name', 100);
 $phone = $clean('phone', 40);
 $email = $clean('email', 100);
-// Вид съёмки: несколько галочек (service[]) или одно значение со старой формы
+// Какой проект: одно значение из списка (или галочки service[] со старой формы)
 $services = array_map(fn($v) => trim(strip_tags((string) $v)), (array) ($_POST['service'] ?? []));
 $service = mb_substr(implode(', ', array_filter($services, fn($v) => $v !== '')), 0, 300);
+$city = $clean('city', 150);
+$booking = ($_POST['booking'] ?? '') === '1';
 $message = $clean('message', 2000);
 $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['date'] ?? '')) ? date('d.m.Y', strtotime($_POST['date'])) : '';
 $page = $clean('page', 200);
 
-if ($name === '' || $phone === '' || $service === '') reply(422, ['ok' => false, 'error' => 'required']);
+if ($name === '' || $phone === '') reply(422, ['ok' => false, 'error' => 'required']);
 // Телефон: российский номер, +7 и 10 цифр
 $digits = preg_replace('/\D/', '', $phone);
 if (strlen($digits) === 11 && $digits[0] === '8') $digits = '7' . substr($digits, 1);
@@ -98,9 +100,11 @@ $text = "Новая заявка с сайта {$host}\n\n"
     . "Имя: {$name}\n"
     . "Телефон: {$phone}\n"
     . ($email !== '' ? "Почта: {$email}\n" : '')
-    . "Вид съёмки: {$service}\n"
-    . ($date !== '' ? "Дата съёмки: {$date}\n" : '')
-    . ($message !== '' ? "Комментарий: {$message}\n" : '')
+    . ($booking ? "Запись на съёмку: да\n" : '')
+    . ($date !== '' ? "Дата события: {$date}\n" : '')
+    . ($service !== '' ? "Проект: {$service}\n" : '')
+    . ($city !== '' ? "Страна и город: {$city}\n" : '')
+    . ($message !== '' ? "Сообщение: {$message}\n" : '')
     . "Страница: {$page}\n"
     . "Согласие на обработку ПД: да, " . date('d.m.Y H:i') . "\n";
 
@@ -113,7 +117,7 @@ if ($config['mail_to'] !== '') {
         'Content-Type: text/plain; charset=UTF-8',
         'Content-Transfer-Encoding: 8bit',
     ], $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) ? ['Reply-To: ' . $email] : []));
-    $subject = '=?UTF-8?B?' . base64_encode("Заявка: {$service} — {$name}") . '?=';
+    $subject = '=?UTF-8?B?' . base64_encode('Заявка' . ($service !== '' ? ": {$service}" : '') . " — {$name}") . '?=';
     $ok = mail($config['mail_to'], $subject, $text, $headers, '-f' . $from);
     if (!$ok) error_log('send.php: mail() failed');
     $sent = $ok || $sent;
@@ -125,9 +129,11 @@ if ($config['telegram_bot_token'] !== '' && $config['telegram_chat_id'] !== '') 
         . "<b>Имя:</b> {$h($name)}\n"
         . "<b>Телефон:</b> <a href=\"tel:+{$digits}\">{$h($phone)}</a>\n"
         . ($email !== '' ? "<b>Почта:</b> {$h($email)}\n" : '')
-        . "<b>Вид съёмки:</b> {$h($service)}\n"
-        . ($date !== '' ? "<b>Дата съёмки:</b> {$date}\n" : '')
-        . ($message !== '' ? "<b>Комментарий:</b> {$h($message)}\n" : '')
+        . ($booking ? "<b>Запись на съёмку:</b> да\n" : '')
+        . ($date !== '' ? "<b>Дата события:</b> {$date}\n" : '')
+        . ($service !== '' ? "<b>Проект:</b> {$h($service)}\n" : '')
+        . ($city !== '' ? "<b>Страна и город:</b> {$h($city)}\n" : '')
+        . ($message !== '' ? "<b>Сообщение:</b> {$h($message)}\n" : '')
         . "<b>Страница:</b> {$h($page)}\n"
         . "<i>Согласие на обработку ПД: да, " . date('d.m.Y H:i') . "</i>";
     foreach (array_filter(array_map('trim', explode(',', (string) $config['telegram_chat_id']))) as $chatId) {

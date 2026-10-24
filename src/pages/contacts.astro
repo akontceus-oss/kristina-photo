@@ -31,7 +31,7 @@ const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
         <a href={`tel:${tel}`}>{SITE.contacts.phone}</a>
       </p>
       <Socials size={22} class="contacts__socials" />
-      <ContactForm button="Отправить" />
+      <ContactForm />
     </div>
   </div>
 </BaseLayout>
@@ -47,7 +47,6 @@ const tel = SITE.contacts.phone.replace(/[^+\d]/g, '');
   .contacts__text :global(.contacts__socials) { justify-content: center; }
   .contacts__text :global(.contacts__socials a) { color: var(--text); }
   .contacts__text :global(.form-block) { margin-top: 2.5rem; text-align: left; }
-  .contacts__text :global(.form button[type=submit]) { justify-self: center; }
   @media (max-width: 1100px) {
     .contacts { grid-template-columns: 1fr; }
     .contacts__photo :global(img) { position: static; height: 50vh; }
