@@ -40,7 +40,7 @@ const services = await getMainServices();
     </label>
     <label class="field">
       <span>Ваше сообщение</span>
-      <textarea name="message" rows="4" maxlength="2000"></textarea>
+      <textarea name="message" rows="1" maxlength="2000" data-autosize></textarea>
     </label>
     <!-- Защита от спама: поле скрыто от людей, боты его заполняют -->
     <label class="hp" aria-hidden="true">Сайт<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
@@ -92,7 +92,8 @@ const services = await getMainServices();
     padding: 3px 0 5px; font: inherit; font-size: 17px; letter-spacing: .03em; color: var(--text);
     background: transparent; -webkit-appearance: none; appearance: none;
   }
-  .field textarea { resize: vertical; min-height: 110px; }
+  /* Сообщение — одна строка, как остальные поля; растёт по мере ввода */
+  .field textarea { resize: none; overflow: hidden; min-height: 0; line-height: 1.4; }
   .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-bottom-color: #000; }
   .form.tried .field :invalid { border-bottom-color: #a33; }
   /* Пустая дата без «дд.мм.гггг» — подсказок в полях нет */
@@ -214,6 +215,10 @@ const services = await getMainServices();
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const say = (text: string, ok: boolean) => { status.textContent = text; status.className = 'form__status ' + (ok ? 'ok' : 'err'); };
+    const msg = form.querySelector<HTMLTextAreaElement>('[data-autosize]')!;
+    const fit = () => { msg.style.height = 'auto'; msg.style.height = msg.scrollHeight + 'px'; };
+    msg.addEventListener('input', fit);
+    form.addEventListener('reset', () => requestAnimationFrame(fit));
     // Подсказка об ошибке исчезает, как только человек начинает исправлять
     form.addEventListener('input', () => { if (status.classList.contains('err')) say('', false); });
 
