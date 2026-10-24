@@ -3,61 +3,57 @@ import { SITE } from '../config/site';
 import { getMainServices } from '../lib/services';
 
 interface Props {
-  title?: string;
-  /** Текст под заголовком; пустая строка — без текста */
-  lead?: string;
   /** Подпись кнопки */
   button?: string;
+  /** Услуга, выбранная в списке «Какой проект» заранее (на странице услуги) */
   selected?: string;
 }
-const {
-  title = 'Запись на съёмку',
-  lead = '',
-  button = 'Записаться',
-  selected,
-} = Astro.props;
+const { button = 'Отправить запрос', selected } = Astro.props;
 const services = await getMainServices();
 ---
-<section class="form-block" id="zayavka">
-  {title && <h2>{title}</h2>}
-  {lead && <p class="form-block__lead">{lead}</p>}
+<section class="form-block" id="zayavka" aria-label="Запись на съёмку">
   <form class="form" method="post" action={SITE.form.endpoint} data-form novalidate>
-    <div class="grid">
-      <label class="f-name">
-        <span>Имя *</span>
-        <input name="name" type="text" autocomplete="name" required maxlength="100" />
-      </label>
-      <fieldset class="f-service" data-services>
-        <legend>Вид съёмки *</legend>
-        <div class="checks">
-          {services.map((s) => (
-            <label class="check"><input type="checkbox" name="service[]" value={s.data.title} checked={s.id === selected} /><span>{s.data.title}</span></label>
-          ))}
-          <label class="check"><input type="checkbox" name="service[]" value="Другое" /><span>Другое</span></label>
-        </div>
-      </fieldset>
-      <label class="f-phone">
-        <span>Телефон *</span>
-        <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="18" placeholder="+7 (000) 000-00-00" pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" data-phone />
-      </label>
-      <label class="f-date">
-        <span>Дата съёмки</span>
-        <input name="date" type="date" data-date />
-      </label>
-      <label class="f-message">
-        <span>Комментарии</span>
-        <textarea name="message" rows="1" maxlength="2000" data-autosize></textarea>
-      </label>
-    </div>
+    <label class="check f-booking">
+      <input type="checkbox" name="booking" value="1" />
+      <span>Запись на съёмку?</span>
+    </label>
+    <label class="field">
+      <span>Ваше имя *</span>
+      <input name="name" type="text" autocomplete="name" required maxlength="100" />
+    </label>
+    <label class="field">
+      <span>Телефон *</span>
+      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="18" pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" data-phone />
+    </label>
+    <label class="field">
+      <span>Дата события *</span>
+      <input name="date" type="date" required data-date />
+    </label>
+    <label class="field field--select">
+      <span>Какой проект</span>
+      <select name="service">
+        <option value=""></option>
+        {services.map((s) => <option value={s.data.title} selected={s.id === selected}>{s.data.title}</option>)}
+        <option value="Другое">Другое</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>Страна и город проведения *</span>
+      <input name="city" type="text" autocomplete="address-level2" required maxlength="150" />
+    </label>
+    <label class="field">
+      <span>Ваше сообщение</span>
+      <textarea name="message" rows="4" maxlength="2000"></textarea>
+    </label>
     <!-- Защита от спама: поле скрыто от людей, боты его заполняют -->
     <label class="hp" aria-hidden="true">Сайт<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
     <input type="hidden" name="ts" value="" data-ts />
     <input type="hidden" name="page" value={Astro.url.pathname} />
-    <label class="consent">
+    <label class="check consent">
       <input type="checkbox" name="consent" value="1" required />
       <span>Я даю <a href="/soglasie/" target="_blank">согласие на обработку персональных данных</a> и ознакомлен(а) с <a href="/privacy/" target="_blank">политикой конфиденциальности</a></span>
     </label>
-    <button type="submit" class="btn btn--dark">{button}</button>
+    <button type="submit" class="form__btn">{button}</button>
     <p class="form__status" role="status" aria-live="polite" data-status></p>
   </form>
 
@@ -87,42 +83,45 @@ const services = await getMainServices();
 </section>
 
 <style>
-  .form-block { max-width: 900px; margin-top: 4rem; border: 1px solid #cfc9c2; padding: 28px 32px 30px; }
-  .form-block h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); margin: 0 0 .25rem; }
-  .form-block__lead { color: var(--text); margin-top: 0; }
-  .form { display: grid; gap: 12px; margin-top: 1rem; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; }
-  .f-name { grid-column: 1; grid-row: 1; }
-  .f-phone { grid-column: 1; grid-row: 2; }
-  .f-service { grid-column: 2; grid-row: 1; }
-  .f-date { grid-column: 2; grid-row: 2; }
-  .f-message { grid-column: 1 / -1; grid-row: 3; display: flex; flex-direction: column; }
-  .f-message textarea { flex: 1; min-height: 32px; }
-  label > span, legend { display: block; font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin-bottom: 2px; }
-  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
-  legend { padding: 0; }
-  .checks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 6px; }
-  .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-  .check input { width: 17px; height: 17px; margin: 0; accent-color: var(--text); flex: none; }
-  .check span { font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 400; margin: 0; color: var(--text); }
-  .form.tried [data-services].invalid legend { color: #a33; }
-  input[type='text'], input[type='tel'], input[type='email'], input[type='date'], select, textarea {
-    width: 100%; border: 0; border-bottom: 1px solid #a9a39c; padding: 5px 0; font: inherit; font-size: 15px;
-    background: transparent; color: var(--text); border-radius: 0;
+  /* Шрифт формы — Lato 2 (OFL), только латиница и кириллица */
+  @font-face { font-family: 'Lato'; font-weight: 400; font-display: swap; src: url('/fonts/lato-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Lato'; font-weight: 300; font-display: swap; src: url('/fonts/lato-light.woff2') format('woff2'); }
+  .form-block { max-width: 600px; margin: 4rem auto 0; }
+  .form { display: grid; gap: 0; font-family: 'Lato', var(--font-sans); color: #3a3a3a; }
+  .field { display: block; padding-top: 30px; }
+  .field > span { display: block; font-size: 17px; letter-spacing: .06em; line-height: 1.3; }
+  .field input, .field select, .field textarea {
+    display: block; width: 100%; border: 0; border-bottom: 1.5px solid #3a3a3a; border-radius: 0;
+    padding: 10px 0 8px; font: inherit; font-size: 17px; letter-spacing: .03em; color: var(--text);
+    background: transparent; -webkit-appearance: none; appearance: none;
   }
-  input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--text); }
-  .form.tried input:invalid { border-bottom-color: #a33; }
-  ::placeholder { color: #6b6661; opacity: 1; }
-  textarea { resize: vertical; }
-  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text); }
-  .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); margin: 0; }
-  .consent input { margin-top: 3px; accent-color: var(--text); }
-  .consent a { color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-bottom-color: #000; }
+  .form.tried .field :invalid { border-bottom-color: #a33; }
+  /* Пустая дата без «дд.мм.гггг» — подсказок в полях нет */
+  .field input[type='date']:invalid:not(:focus)::-webkit-datetime-edit { color: transparent; }
+  .field input[type='date'] { min-height: 40px; }
+  .field--select { position: relative; }
+  .field--select select { cursor: pointer; padding-right: 24px; }
+  .field--select::after {
+    content: ''; position: absolute; right: 6px; bottom: 20px; width: 7px; height: 7px; pointer-events: none;
+    border-right: 1.5px solid #3a3a3a; border-bottom: 1.5px solid #3a3a3a; transform: rotate(45deg);
+  }
+  .check { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  .check input { width: 16px; height: 16px; margin: 3px 0 0; accent-color: #3a3a3a; flex: none; }
+  .f-booking { font-size: 16px; letter-spacing: .06em; }
+  .f-booking input { margin-top: 2px; }
+  .consent { margin: 26px 0 26px; font-size: 13px; line-height: 1.6; letter-spacing: .03em; color: #555; }
+  .consent a { color: inherit; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .btn--dark { background: var(--text); color: #fff; cursor: pointer; font-family: inherit; justify-self: start; }
-  .btn--dark:hover { background: #000; }
-  .btn--dark[disabled] { opacity: .5; cursor: wait; }
-  .form__status { margin: 0; font-size: 14px; min-height: 1.5em; }
+  .form__btn {
+    justify-self: center; min-width: min(68%, 400px); white-space: nowrap; border: 0; background: #f3f2f0; color: #333; cursor: pointer;
+    padding: 18px 40px; font: 300 17px/1.2 'Lato', var(--font-sans); letter-spacing: .32em; text-transform: uppercase;
+    transition: background .2s;
+  }
+  .form__btn:hover { background: #e8e6e3; }
+  .form__btn[disabled] { opacity: .5; cursor: wait; }
+  .form__status { margin: 14px 0 0; font-size: 14px; min-height: 1.5em; text-align: center; }
   .form__status:empty { display: none; }
   .form__status.ok { color: #3c6e3c; }
   .form__status.err { color: #a33; }
@@ -172,7 +171,8 @@ const services = await getMainServices();
     content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%;
     background: #e03b2f; vertical-align: 1px; animation: shot-rec 1s steps(2) infinite;
   }
-  .shot__ok { margin-top: 16px; }
+  .shot__ok { margin-top: 16px; background: var(--text); color: #fff; cursor: pointer; font-family: inherit; }
+  .shot__ok:hover { background: #000; }
   .shot__date {
     position: absolute; bottom: 18px; right: 46px; font-family: 'Courier New', monospace; font-size: 15px; font-weight: 700;
     letter-spacing: .08em; color: #ff9a3c; text-shadow: 0 0 6px rgba(255, 140, 40, .7);
@@ -198,13 +198,11 @@ const services = await getMainServices();
   }
 
   @media (max-width: 700px) {
-    .form-block { margin-top: 2rem; padding: 18px 16px 20px; }
-    .form { gap: 10px; margin-top: .75rem; }
-    .grid { grid-template-columns: 1fr; gap: 11px; }
-    .grid > label, .grid > fieldset { grid-column: 1 !important; grid-row: auto !important; }
+    .form-block { margin-top: 2rem; }
+    .field { padding-top: 26px; }
     /* 16px — чтобы iPhone не увеличивал страницу при вводе */
-    input[type='text'], input[type='tel'], input[type='email'], input[type='date'], textarea { font-size: 16px; padding: 4px 0; }
-    .checks { gap: 8px 14px; }
+    .field > span, .field input, .field select, .field textarea { font-size: 16px; }
+    .form__btn { width: 100%; min-width: 0; padding: 18px 10px; font-size: 15px; letter-spacing: .28em; }
   }
 </style>
 
@@ -220,6 +218,8 @@ const services = await getMainServices();
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const say = (text: string, ok: boolean) => { status.textContent = text; status.className = 'form__status ' + (ok ? 'ok' : 'err'); };
+    // Подсказка об ошибке исчезает, как только человек начинает исправлять
+    form.addEventListener('input', () => { if (status.classList.contains('err')) say('', false); });
 
     // Телефон: всегда +7 и маска +7 (900) 123-45-67, лишние цифры не вводятся
     const phone = form.querySelector<HTMLInputElement>('[data-phone]')!;
@@ -274,22 +274,16 @@ const services = await getMainServices();
     // Клик по затемнению вокруг снимка закрывает попап
     shot.addEventListener('click', (e) => { if (e.target === shot) shot.close(); });
 
-    form.querySelector('[data-services]')!.addEventListener('change', (e) => (e.currentTarget as HTMLElement).classList.remove('invalid'));
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       form.classList.add('tried');
-      // Вид съёмки: нужна хотя бы одна галочка
-      const servicesBox = form.querySelector<HTMLElement>('[data-services]')!;
-      const noService = !servicesBox.querySelector('input:checked');
-      servicesBox.classList.toggle('invalid', noService);
-      if (!form.checkValidity() || noService) {
-        const consent = form.querySelector<HTMLInputElement>('[name=consent]')!;
-        const name = form.querySelector<HTMLInputElement>('[name=name]')!;
-        if (!name.value.trim()) say('Укажите, как к вам обращаться.', false);
-        else if (noService) say('Отметьте вид съёмки.', false);
+      if (!form.checkValidity()) {
+        const field = (n: string) => form.querySelector<HTMLInputElement>(`[name=${n}]`)!;
+        if (!field('name').value.trim()) say('Укажите, как к вам обращаться.', false);
         else if (!phone.validity.valid) say('Проверьте номер телефона: после +7 нужно 10 цифр.', false);
-        else say(consent.checked ? 'Проверьте заполнение формы.' : 'Нужно согласие на обработку персональных данных.', false);
+        else if (!field('date').value) say('Укажите дату события.', false);
+        else if (!field('city').value.trim()) say('Укажите страну и город.', false);
+        else say(field('consent').checked ? 'Проверьте заполнение формы.' : 'Нужно согласие на обработку персональных данных.', false);
         return;
       }
       btn.disabled = true;
