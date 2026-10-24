@@ -22,7 +22,6 @@ const isActive = (href: string): boolean =>
 <header class="sidebar" data-sidebar>
   <div class="sidebar__top">
     <a class="logo" href="/" aria-label={`${SITE.name} — на главную`}>{SITE.name}</a>
-    <Socials class="top-socials" size={17} />
     <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="site-nav" data-burger>
       <span></span><span></span><span></span>
     </button>
@@ -83,7 +82,6 @@ const isActive = (href: string): boolean =>
   .sidebar__meta a { color: inherit; }
   .sidebar__meta { margin: 14px 0 0; font-size: 11px; color: var(--muted); letter-spacing: .08em; }
   .burger { display: none; }
-  .sidebar :global(.top-socials) { display: none; }
 
   @media (max-width: 900px) {
     /* На телефоне шапка липкая (sticky), а не fixed. В мобильном Safari fixed-шапку
@@ -96,8 +94,6 @@ const isActive = (href: string): boolean =>
     }
     .sidebar__top { height: 64px; }
     .logo { font-size: 26px; }
-    .sidebar :global(.top-socials) { display: flex; flex-wrap: nowrap; gap: 16px; margin-left: auto; margin-right: 6px; }
-    .sidebar :global(.top-socials a) { color: #555; padding: 4px 0; }
     .burger { display: flex; flex-direction: column; gap: 6px; background: none; border: 0; padding: 10px; cursor: pointer; }
     .burger span { width: 24px; height: 1px; background: var(--text); transition: transform .25s, opacity .25s; }
     .sidebar.menu-open .burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
