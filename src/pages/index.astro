@@ -4,7 +4,6 @@ import Slideshow from '../components/Slideshow.astro';
 import ServiceCards from '../components/ServiceCards.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Socials from '../components/Socials.astro';
-import { SITE } from '../config/site';
 import { getMainServices, formatPrice } from '../lib/services';
 import { graph, personSchema, businessSchema, websiteSchema } from '../lib/schema';
 
@@ -18,13 +17,7 @@ const slides = Object.keys(files).sort().map((k, i) => ({
 const services = await getMainServices();
 ---
 <BaseLayout schema={graph(websiteSchema(), businessSchema(), personSchema())}>
-  <Slideshow slides={slides}>
-    <div class="hero-caption">
-      <p class="hero-caption__name">{SITE.role} {SITE.fullName}</p>
-      <p>Рязань · Москва</p>
-    </div>
-    <a class="scroll-hint" href="#uslugi" aria-label="Листать вниз к услугам">↓</a>
-  </Slideshow>
+  <Slideshow slides={slides} />
 
   <div class="page page--wide" id="uslugi">
     <h1>Фотограф в Рязани и Москве</h1>
@@ -77,18 +70,6 @@ const services = await getMainServices();
 </BaseLayout>
 
 <style>
-  .hero-caption {
-    position: absolute; left: 40px; bottom: 36px; z-index: 2; color: #fff;
-    text-shadow: 0 1px 8px rgba(0,0,0,.35); pointer-events: none;
-  }
-  .hero-caption p { margin: 0; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; opacity: .85; }
-  .hero-caption .hero-caption__name { font: 500 12px/1.4 var(--font-sans); letter-spacing: .22em; margin-bottom: 4px; opacity: 1; }
-  .scroll-hint {
-    position: absolute; right: 40px; bottom: 30px; z-index: 2; color: #fff; text-decoration: none; font-size: 22px;
-    text-shadow: 0 1px 8px rgba(0,0,0,.35); animation: bob 2s ease-in-out infinite;
-  }
-  @keyframes bob { 50% { transform: translateY(6px); } }
-  @media (prefers-reduced-motion: reduce) { .scroll-hint { animation: none; } }
   .page--wide { max-width: 1400px; }
   .intro { max-width: 760px; color: var(--text); margin-bottom: 3rem; }
   .city { max-width: 760px; margin-top: 4rem; }
@@ -100,5 +81,4 @@ const services = await getMainServices();
   .prices a { color: inherit; }
   .prices p a { color: var(--accent); }
   .messengers { margin-top: 3rem; }
-  @media (max-width: 900px) { .hero-caption { left: 20px; bottom: 24px; } .scroll-hint { right: 20px; } }
 </style>
