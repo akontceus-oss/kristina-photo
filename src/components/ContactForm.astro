@@ -27,13 +27,15 @@ const services = await getMainServices();
         <span>Имя *</span>
         <input name="name" type="text" autocomplete="name" required maxlength="100" />
       </label>
-      <label class="f-service">
-        <span>Вид съёмки *</span>
-        <select name="service" required>
-          {services.map((s) => <option value={s.data.title} selected={s.id === selected}>{s.data.title}</option>)}
-          <option value="Другое">Другое</option>
-        </select>
-      </label>
+      <fieldset class="f-service" data-services>
+        <legend>Вид съёмки *</legend>
+        <div class="checks">
+          {services.map((s) => (
+            <label class="check"><input type="checkbox" name="service[]" value={s.data.title} checked={s.id === selected} /><span>{s.data.title}</span></label>
+          ))}
+          <label class="check"><input type="checkbox" name="service[]" value="Другое" /><span>Другое</span></label>
+        </div>
+      </fieldset>
       <label class="f-phone">
         <span>Телефон *</span>
         <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="18" placeholder="+7 (900) 123-45-67" pattern="\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}" data-phone />
@@ -44,7 +46,7 @@ const services = await getMainServices();
       </label>
       <label class="f-message">
         <span>Комментарии</span>
-        <textarea name="message" rows="1" maxlength="2000" placeholder="Что снимаем, сколько позиций, даты" data-autosize></textarea>
+        <textarea name="message" rows="1" maxlength="2000" data-autosize></textarea>
       </label>
       <label class="f-email">
         <span>Эл. почта</span>
@@ -101,13 +103,21 @@ const services = await getMainServices();
   .f-date { grid-column: 2; grid-row: 2; }
   .f-message { grid-column: 2; grid-row: 3; display: flex; flex-direction: column; }
   .f-message textarea { flex: 1; min-height: 44px; }
-  label span { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  label > span, legend { display: block; font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin-bottom: 4px; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { padding: 0; }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 6px; }
+  .check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .check input { width: 17px; height: 17px; margin: 0; accent-color: var(--text); flex: none; }
+  .check span { font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 400; margin: 0; color: var(--text); }
+  .form.tried [data-services].invalid legend { color: #a33; }
   input[type='text'], input[type='tel'], input[type='email'], input[type='date'], select, textarea {
-    width: 100%; border: 0; border-bottom: 1px solid #cfcac4; padding: 10px 0; font: inherit; font-size: 15px;
+    width: 100%; border: 0; border-bottom: 1px solid #a9a39c; padding: 8px 0; font: inherit; font-size: 15px;
     background: transparent; color: var(--text); border-radius: 0;
   }
   input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--text); }
   .form.tried input:invalid { border-bottom-color: #a33; }
+  ::placeholder { color: #6b6661; opacity: 1; }
   textarea { resize: vertical; }
   .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text); }
   .consent span { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); margin: 0; }
@@ -192,8 +202,13 @@ const services = await getMainServices();
   }
 
   @media (max-width: 700px) {
-    .grid { grid-template-columns: 1fr; gap: 22px; }
-    .grid > label { grid-column: 1 !important; grid-row: auto !important; }
+    .form-block { margin-top: 2.5rem; }
+    .form { gap: 14px; margin-top: 1rem; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .grid > label, .grid > fieldset { grid-column: 1 !important; grid-row: auto !important; }
+    /* 16px — чтобы iPhone не увеличивал страницу при вводе */
+    input[type='text'], input[type='tel'], input[type='email'], input[type='date'], textarea { font-size: 16px; padding: 6px 0; }
+    .checks { gap: 8px 14px; }
   }
 </style>
 
@@ -263,13 +278,20 @@ const services = await getMainServices();
     // Клик по затемнению вокруг снимка закрывает попап
     shot.addEventListener('click', (e) => { if (e.target === shot) shot.close(); });
 
+    form.querySelector('[data-services]')!.addEventListener('change', (e) => (e.currentTarget as HTMLElement).classList.remove('invalid'));
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       form.classList.add('tried');
-      if (!form.checkValidity()) {
+      // Вид съёмки: нужна хотя бы одна галочка
+      const servicesBox = form.querySelector<HTMLElement>('[data-services]')!;
+      const noService = !servicesBox.querySelector('input:checked');
+      servicesBox.classList.toggle('invalid', noService);
+      if (!form.checkValidity() || noService) {
         const consent = form.querySelector<HTMLInputElement>('[name=consent]')!;
         const name = form.querySelector<HTMLInputElement>('[name=name]')!;
         if (!name.value.trim()) say('Укажите, как к вам обращаться.', false);
+        else if (noService) say('Отметьте вид съёмки.', false);
         else if (!phone.validity.valid) say('Проверьте номер телефона: после +7 нужно 10 цифр.', false);
         else say(consent.checked ? 'Проверьте заполнение формы.' : 'Нужно согласие на обработку персональных данных.', false);
         return;

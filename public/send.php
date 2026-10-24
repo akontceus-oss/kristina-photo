@@ -78,12 +78,14 @@ $clean = fn(string $k, int $max) => trim(mb_substr(strip_tags((string) ($_POST[$
 $name = $clean('name', 100);
 $phone = $clean('phone', 40);
 $email = $clean('email', 100);
-$service = $clean('service', 100);
+// Вид съёмки: несколько галочек (service[]) или одно значение со старой формы
+$services = array_map(fn($v) => trim(strip_tags((string) $v)), (array) ($_POST['service'] ?? []));
+$service = mb_substr(implode(', ', array_filter($services, fn($v) => $v !== '')), 0, 300);
 $message = $clean('message', 2000);
 $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_POST['date'] ?? '')) ? date('d.m.Y', strtotime($_POST['date'])) : '';
 $page = $clean('page', 200);
 
-if ($name === '' || $phone === '') reply(422, ['ok' => false, 'error' => 'required']);
+if ($name === '' || $phone === '' || $service === '') reply(422, ['ok' => false, 'error' => 'required']);
 // Телефон: российский номер, +7 и 10 цифр
 $digits = preg_replace('/\D/', '', $phone);
 if (strlen($digits) === 11 && $digits[0] === '8') $digits = '7' . substr($digits, 1);
