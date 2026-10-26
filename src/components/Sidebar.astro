@@ -14,10 +14,12 @@ const nav = NAV.map((item) =>
   item.href === '/portfolio/' ? { ...item, children: services.map((s) => ({ label: s.data.title, href: `/${s.id}/` })) } : item,
 );
 const path = Astro.url.pathname;
+// Пункты-якоря (/info/#…) подсвечиваются только родителем: адрес страницы у них общий.
 const isActive = (href: string): boolean =>
-  path === href ||
-  (href !== '/' && path.startsWith(href)) ||
-  nav.some((i) => i.href === href && i.children?.some((c) => path.startsWith(c.href)));
+  !href.includes('#') &&
+  (path === href ||
+    (href !== '/' && path.startsWith(href)) ||
+    nav.some((i) => i.href === href && i.children?.some((c) => !c.href.includes('#') && path.startsWith(c.href))));
 ---
 <header class="sidebar" data-sidebar>
   <div class="sidebar__top">
@@ -37,7 +39,7 @@ const isActive = (href: string): boolean =>
                 {item.label}<span class="plus" aria-hidden="true">+</span>
               </button>
               <ul class="sub">
-                <li><a href={item.href} class:list={{ active: path === item.href }}>Все работы</a></li>
+                {item.href === '/portfolio/' && <li><a href={item.href} class:list={{ active: path === item.href }}>Все работы</a></li>}
                 {item.children.map((c) => <li><a href={c.href} class:list={{ active: isActive(c.href) }}>{c.label}</a></li>)}
               </ul>
             </>
@@ -104,9 +106,16 @@ const isActive = (href: string): boolean =>
       margin: 0; padding: 40px 24px; display: none; overflow-y: auto;
     }
     .sidebar.menu-open .nav { display: flex; }
-    .nav > ul > li { margin-bottom: 22px; }
-    .nav__link { font-size: 14px; }
-    .sub a { font-size: 13px; padding: 6px 0; }
+    /* Мобильное меню: обычный регистр, крупнее, блок по центру экрана (текст — по левому краю).
+       margin: auto центрирует список и не обрезает его сверху, если раскрытое подменю не влезает. */
+    .nav > ul { margin: auto; padding-bottom: 64px; }
+    .nav > ul > li { margin-bottom: 12px; }
+    .nav__link, .sub a { text-transform: none; letter-spacing: .01em; }
+    .nav__link { font-size: 21px; line-height: 1.2; }
+    .nav__link:hover, .nav__link.active, .sub a:hover, .sub a.active { text-underline-offset: 5px; }
+    .plus { margin-left: 8px; }
+    .has-sub.open .sub { margin-top: 6px; margin-bottom: 4px; }
+    .sub a { font-size: 16px; padding: 5px 0; color: #3a3a3a; }
   }
 </style>
 
@@ -118,6 +127,16 @@ const isActive = (href: string): boolean =>
     burger.setAttribute('aria-expanded', String(open));
     burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     document.body.style.overflow = open ? 'hidden' : '';
+  });
+  // Переход по якорю на той же странице (Инфо → Календарь и т.п.) не перезагружает её — закрываем меню сами.
+  document.querySelectorAll<HTMLAnchorElement>('#site-nav a').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (!sidebar?.classList.contains('menu-open')) return;
+      sidebar.classList.remove('menu-open');
+      burger?.setAttribute('aria-expanded', 'false');
+      burger?.setAttribute('aria-label', 'Открыть меню');
+      document.body.style.overflow = '';
+    });
   });
   document.querySelectorAll<HTMLButtonElement>('[data-sub-toggle]').forEach((btn) => {
     btn.addEventListener('click', () => {
