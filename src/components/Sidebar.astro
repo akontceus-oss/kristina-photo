@@ -15,6 +15,7 @@ const nav = NAV.map((item) =>
 );
 const path = Astro.url.pathname;
 // Пункты-якоря (/info/#…) подсвечиваются только родителем: адрес страницы у них общий.
+// Подпункт с тем же адресом, что у родителя («Инфо → Календарь»), подсвечивается только на своей странице.
 const isActive = (href: string): boolean =>
   !href.includes('#') &&
   (path === href ||
@@ -40,7 +41,7 @@ const isActive = (href: string): boolean =>
               </button>
               <ul class="sub">
                 {item.href === '/portfolio/' && <li><a href={item.href} class:list={{ active: path === item.href }}>Все работы</a></li>}
-                {item.children.map((c) => <li><a href={c.href} class:list={{ active: isActive(c.href) }}>{c.label}</a></li>)}
+                {item.children.map((c) => <li><a href={c.href} class:list={{ active: c.href === item.href ? path === c.href : isActive(c.href) }}>{c.label}</a></li>)}
               </ul>
             </>
           ) : (

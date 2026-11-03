@@ -7,7 +7,7 @@ export interface NavItem {
 /**
  * Пункты меню (слева и продублированы в подвале каждой страницы).
  * Подменю «Портфолио» собирается автоматически из видов съёмок (src/content/services),
- * подменю «Инфо» задано здесь: разделы страницы /info/, цены и блог.
+ * подменю «Инфо» задано здесь: календарь (/info/), цены, отзывы и блог.
  */
 export const NAV: NavItem[] = [
   { label: 'Портфолио', href: '/portfolio/', children: [] },
@@ -16,9 +16,9 @@ export const NAV: NavItem[] = [
     label: 'Инфо',
     href: '/info/',
     children: [
-      { label: 'Календарь', href: '/info/#kalendar' },
+      { label: 'Календарь', href: '/info/' },
       { label: 'Цены', href: '/uslugi/' },
-      { label: 'Отзывы', href: '/info/#otzyvy' },
+      { label: 'Отзывы', href: '/otzyvy/' },
       { label: 'Блог', href: '/blog/' },
     ],
   },
