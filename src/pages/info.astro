@@ -15,7 +15,7 @@ import { REVIEWS } from '../config/reviews';
     <h1>Инфо</h1>
     <p class="lead">Свободные даты для съёмки, отзывы и ответы на вопросы, которые мне задают чаще всего.</p>
 
-    <section class="cal" aria-labelledby="cal-title">
+    <section class="cal" id="kalendar" aria-labelledby="cal-title">
       <h2 id="cal-title">Календарь съёмок</h2>
       <p class="cal__hint">Нажмите на свободный день, чтобы оставить заявку на эту дату.</p>
       <div class="cal__months" data-calendar data-busy={JSON.stringify(CALENDAR.busy)} data-months={CALENDAR.months}></div>
@@ -23,9 +23,9 @@ import { REVIEWS } from '../config/reviews';
       <noscript><p>Чтобы узнать свободные даты, напишите мне — ссылки на странице <a href="/contacts/">«Контакты»</a>.</p></noscript>
     </section>
 
-    {REVIEWS.length > 0 && (
-      <section class="reviews">
-        <h2>Отзывы</h2>
+    <section class="reviews" id="otzyvy">
+      <h2>Отзывы</h2>
+      {REVIEWS.length > 0 ? (
         <div class="reviews__list">
           {REVIEWS.map((r) => (
             <figure>
@@ -34,11 +34,13 @@ import { REVIEWS } from '../config/reviews';
             </figure>
           ))}
         </div>
-      </section>
-    )}
+      ) : (
+        <p class="reviews__empty">Скоро здесь появятся отзывы клиентов.</p>
+      )}
+    </section>
 
-    <section class="faq">
-      <h2>Ответы на частые вопросы</h2>
+    <section class="faq" id="voprosy">
+      <h2>Вопрос — ответ</h2>
       {FAQ.map((f) => (
         <details>
           <summary>{f.q}</summary>
@@ -73,6 +75,7 @@ import { REVIEWS } from '../config/reviews';
   .reviews blockquote { margin: 0 0 1rem; font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.5; }
   .reviews figcaption { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
   .reviews figcaption span { text-transform: none; letter-spacing: 0; }
+  .reviews__empty { color: var(--muted); }
   .faq { max-width: 820px; margin: 4rem 0; }
   .faq details { border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
   .faq summary { cursor: pointer; font-family: var(--font-serif); font-size: 1.35rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
