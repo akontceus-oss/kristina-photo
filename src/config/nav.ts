@@ -18,7 +18,6 @@ export const NAV: NavItem[] = [
     children: [
       { label: 'Календарь', href: '/info/#kalendar' },
       { label: 'Цены', href: '/uslugi/' },
-      { label: 'Вопрос — ответ', href: '/info/#voprosy' },
       { label: 'Отзывы', href: '/info/#otzyvy' },
       { label: 'Блог', href: '/blog/' },
     ],
