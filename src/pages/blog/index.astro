@@ -18,7 +18,7 @@ const articles = await getArticles();
       {articles.map((a) => (
         <li>
           <a href={`/blog/${a.id}/`}>
-            <Image src={a.data.cover.src} alt="" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" />
+            {a.data.cover && <Image src={a.data.cover.src} alt="" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" />}
             <span class="list__date">{formatDate(a.data.date)}</span>
             <span class="list__title">{a.data.title}</span>
             <span class="list__lead">{a.data.lead}</span>

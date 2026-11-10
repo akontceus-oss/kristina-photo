@@ -6,9 +6,6 @@ description: 'Фотосъёмка товаров для маркетплейс�
 lead: 'Фото для карточек Wildberries, Ozon и Яндекс Маркета, которые выделяются в выдаче и отвечают на вопросы покупателя.'
 parent: predmetnaya-semka
 order: 10
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-8.jpg
-  alt: 'Фотосъёмка товара для маркетплейса'
 includes:
   - 'Главное фото на светлом фоне в пропорции 3:4'
   - 'Ракурсы, детали, комплектация и масштаб'

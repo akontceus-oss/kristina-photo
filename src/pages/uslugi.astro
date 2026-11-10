@@ -52,7 +52,7 @@ const schema = graph(
       {services.map((s, i) => (
         <article class:list={['svc', { 'svc--rev': i % 2 }]}>
           <a class="svc__img" href={`/${s.id}/`} tabindex="-1" aria-hidden="true">
-            <Image src={s.data.cover.src} alt="" widths={[600, 900]} sizes="(max-width: 900px) 100vw, 45vw" />
+            {s.data.cover && <Image src={s.data.cover.src} alt="" widths={[600, 900]} sizes="(max-width: 900px) 100vw, 45vw" />}
           </a>
           <div class="svc__body">
             <h2><a href={`/${s.id}/`}>{s.data.title}</a></h2>

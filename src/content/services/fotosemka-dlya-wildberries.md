@@ -6,9 +6,6 @@ description: 'Фотосъёмка товаров для Wildberries в Моск
 lead: 'Фото для карточек Wildberries в пропорции 3:4: главное фото, ракурсы, детали и lifestyle.'
 parent: fotosemka-dlya-marketpleysov
 order: 20
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-4.jpg
-  alt: 'Фотосъёмка товара для Wildberries'
 faq:
   - q: 'Какой размер фото нужен для Wildberries?'
     a: 'Wildberries использует вертикальные фото в пропорции 3:4. Я экспортирую файлы с запасом по разрешению, а точные актуальные требования сверяю с правилами площадки перед съёмкой.'

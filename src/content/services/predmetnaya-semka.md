@@ -13,17 +13,8 @@ includes:
   - 'Ретушь и подготовка под требования маркетплейсов'
   - 'Передача фото в нужных размерах и форматах'
 cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-1.jpg
-  alt: 'Предметная съёмка товаров — обложка'
-photos:
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-1.jpg, alt: 'Предметная съёмка товара на белом фоне' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-2.jpg, alt: 'Фото товара для маркетплейса' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-3.jpg, alt: 'Предметная съёмка в интерьере' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-4.jpg, alt: 'Фото товара для каталога' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-5.jpg, alt: 'Предметное фото для интернет-магазина' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-6.jpg, alt: 'Рекламная предметная съёмка' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-7.jpg, alt: 'Съёмка товара с реквизитом' }
-  - { src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-8.jpg, alt: 'Предметная съёмка для Wildberries и Ozon' }
+  src: ../../assets/services/semka-menyu/hleb-na-zakvaske.jpg
+  alt: 'Хлеб на закваске — съёмка продукции пекарни'
 faq:
   - q: 'Снимаете под требования Wildberries и Ozon?'
     a: 'Да, подготовлю фото в нужных пропорциях и размерах для выбранной площадки.'
