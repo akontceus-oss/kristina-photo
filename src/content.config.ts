@@ -36,7 +36,7 @@ const services = defineCollection({
       priceNote: z.string().optional(),
       /** Что входит — список на странице и в прайсе. */
       includes: z.array(z.string()).default([]),
-      cover: photo(image),
+      cover: photo(image).optional(),
       photos: z.array(photo(image)).default([]),
       faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
       /** Для посадочных под город. */
@@ -62,7 +62,7 @@ const articles = defineCollection({
       description: z.string().max(180),
       lead: z.string(),
       date: z.coerce.date(),
-      cover: photo(image),
+      cover: photo(image).optional(),
       services: z.array(z.string()).default([]),
       faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
       draft: z.boolean().default(false),
