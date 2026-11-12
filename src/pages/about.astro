@@ -12,9 +12,9 @@ import { SITE } from '../config/site';
   image={portrait}
   schema={graph(breadcrumbs([{ name: 'Об авторе', path: '/about/' }]), { '@type': 'ProfilePage', mainEntity: personSchema() })}
 >
-  <div class="page about">
+  <div class="about">
     <div class="about__photo">
-      <Image src={portrait} alt={`${SITE.role} ${SITE.fullName}`} widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" loading="eager" />
+      <Image src={portrait} alt={`${SITE.role} ${SITE.fullName}`} widths={[500, 800]} sizes="(max-width: 1100px) 100vw, 40vw" loading="eager" />
     </div>
     <div class="about__text prose">
       <h1>Об авторе</h1>
@@ -27,7 +27,18 @@ import { SITE } from '../config/site';
 </BaseLayout>
 
 <style>
-  .about { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 4rem; align-items: start; }
-  .about__photo :global(img) { width: 100%; }
-  @media (max-width: 1000px) { .about { grid-template-columns: 1fr; gap: 2rem; } }
+  /* Тот же каркас, что на «Контактах»: фото заполняет колонку от края до края */
+  .about { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); min-height: 100vh; }
+  .about__photo { position: relative; }
+  .about__photo :global(img) { position: sticky; top: 0; width: 100%; height: 100vh; object-fit: cover; }
+  .about__text { padding: 4.25rem 4rem 3rem; max-width: 760px; width: 100%; }
+  @media (max-width: 1100px) {
+    .about { grid-template-columns: 1fr; min-height: 0; }
+    .about__photo :global(img) { position: static; height: 50vh; }
+    .about__text { padding: 2.5rem 1.25rem; }
+  }
+  @media (max-width: 600px) {
+    .about__photo :global(img) { height: 34vh; }
+    .about__text { padding: 1.75rem 1.25rem 2.5rem; }
+  }
 </style>
