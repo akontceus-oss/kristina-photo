@@ -7,9 +7,6 @@ lead: 'Профессиональные фото для карточек тов�
 city: Москва
 parent: fotosemka-dlya-marketpleysov
 order: 91
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-3.jpg
-  alt: 'Фотосъёмка для маркетплейсов в Москве'
 faq:
   - q: 'Вы снимаете на складе?'
     a: 'Да, могу приехать на склад или в офис в пределах МКАД со своим светом и фонами — так не нужно возить большие партии товара.'

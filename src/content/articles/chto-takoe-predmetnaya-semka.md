@@ -4,9 +4,6 @@ seoTitle: 'Что такое предметная съёмка: виды, зад
 description: 'Предметная съёмка простыми словами: чем отличается от других видов фотографии, какие бывают виды (каталожная, интерьерная, рекламная), где используется и как заказать.'
 lead: 'Разбираю, что называют предметной съёмкой, чем отличаются её виды и как понять, какая нужна именно вашему товару.'
 date: 2026-10-22
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-3.jpg
-  alt: 'Предметная съёмка товара в интерьере'
 services: ['predmetnaya-semka', 'fotosemka-na-belom-fone', 'interernaya-predmetnaya-semka', 'fotosemka-dlya-marketpleysov', 'predmetnaya-semka-moskva', 'predmetnaya-semka-ryazan']
 faq:
   - q: 'Чем предметная съёмка отличается от каталожной?'

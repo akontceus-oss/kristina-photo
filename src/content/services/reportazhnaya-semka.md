@@ -18,10 +18,12 @@ photos:
   - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-1.jpg, alt: 'Участник разговорного клуба за столом' }
   - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-2.jpg, alt: 'Участница встречи слушает собеседника' }
   - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-3.jpg, alt: 'Ребёнок на мероприятии' }
+  - { src: ../../assets/services/reportazhnaya-semka/razgovornyy-klub-4.jpg, alt: 'Участница разговорного клуба улыбается' }
   - { src: ../../assets/services/reportazhnaya-semka/portret-uchastnika-chb.jpg, alt: 'Чёрно-белый портрет участника мероприятия' }
   - { src: ../../assets/services/reportazhnaya-semka/karting-1.jpg, alt: 'Мероприятие в картинг-клубе' }
   - { src: ../../assets/services/reportazhnaya-semka/karting-2.jpg, alt: 'Заезд на картингах' }
   - { src: ../../assets/services/reportazhnaya-semka/karting-3.jpg, alt: 'Девочка за рулём карта' }
+  - { src: ../../assets/services/reportazhnaya-semka/karting-4.jpg, alt: 'Гонщик в неоновом свете картинг-клуба' }
   - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-1.jpg, alt: 'Детский праздник в картинг-клубе' }
   - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-2.jpg, alt: 'Дети в шлемах перед заездом' }
   - { src: ../../assets/services/reportazhnaya-semka/detskiy-prazdnik-karting-3.jpg, alt: 'Ребёнок на детском карте' }
@@ -31,12 +33,26 @@ photos:
   - { src: ../../assets/services/reportazhnaya-semka/muzykanty-3.jpg, alt: 'Портрет музыкантов на сцене' }
   - { src: ../../assets/services/reportazhnaya-semka/muzykanty-4.jpg, alt: 'Пианист у рояля' }
   - { src: ../../assets/services/reportazhnaya-semka/muzykanty-5.jpg, alt: 'Рояль и скрипка на сцене' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-6.jpg, alt: 'Концерт: скрипачка и пианист на сцене' }
+  - { src: ../../assets/services/reportazhnaya-semka/muzykanty-7.jpg, alt: 'Скрипачка на сцене у рояля' }
   - { src: ../../assets/services/reportazhnaya-semka/detskaya-futbolnaya-komanda.jpg, alt: 'Детская футбольная команда' }
   - { src: ../../assets/services/reportazhnaya-semka/manezh-1.jpg, alt: 'Крытый футбольный манеж' }
   - { src: ../../assets/services/reportazhnaya-semka/manezh-2.jpg, alt: 'Трибуны футбольного манежа' }
   - { src: ../../assets/services/reportazhnaya-semka/manezh-3.jpg, alt: 'Поле и трибуны манежа' }
   - { src: ../../assets/services/reportazhnaya-semka/manezh-4.jpg, alt: 'Футбольный манеж изнутри' }
   - { src: ../../assets/services/reportazhnaya-semka/manezh-5.jpg, alt: 'Разметка поля в манеже' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-1.jpg, alt: 'Экологическая акция: посадка леса' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-2.jpg, alt: 'Участник акции с лопатой на посадке леса' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-3.jpg, alt: 'Саженец сосны в руке волонтёра' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-4.jpg, alt: 'Волонтёр высаживает саженец' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-5.jpg, alt: 'Посадка сосен в поле' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-6.jpg, alt: 'Молодая сосна после посадки' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-7.jpg, alt: 'Ведро с саженцами на акции' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-8.jpg, alt: 'Участник акции с ведром саженцев' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-9.jpg, alt: 'Интервью с участником экологической акции' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-10.jpg, alt: 'Команда волонтёров на посадке леса' }
+  - { src: ../../assets/services/reportazhnaya-semka/posadka-lesa-11.jpg, alt: 'Ящик с саженцами сосны' }
+  - { src: ../../assets/services/reportazhnaya-semka/zagorodnyy-klub-mayak.jpg, alt: 'Маяк на территории загородного клуба' }
 faq:
   - q: 'Сколько стоит репортажная съёмка?'
     a: 'Оплата почасовая, минимальный заказ — 2 часа. Точную стоимость рассчитаю по формату, длительности и месту мероприятия.'

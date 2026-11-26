@@ -9,16 +9,16 @@ const articles = await getArticles();
 <BaseLayout
   title="Статьи о съёмке меню и предметной съёмке — фотограф Кристина"
   description="Полезные статьи для ресторанов, кафе и продавцов маркетплейсов: как подготовиться к съёмке меню, требования к фото для Wildberries и Ozon, из чего складывается цена."
-  schema={graph(breadcrumbs([{ name: 'Статьи', path: '/blog/' }]))}
+  schema={graph(breadcrumbs([{ name: 'Блог', path: '/blog/' }]))}
 >
   <div class="page page--wide">
-    <h1>Статьи</h1>
+    <h1>Блог</h1>
     <p class="lead">Коротко и по делу о том, как получить фото, которые продают: для меню, доставки, сайта и маркетплейсов.</p>
     <ul class="list">
       {articles.map((a) => (
         <li>
           <a href={`/blog/${a.id}/`}>
-            <Image src={a.data.cover.src} alt="" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" />
+            {a.data.cover && <Image src={a.data.cover.src} alt="" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" />}
             <span class="list__date">{formatDate(a.data.date)}</span>
             <span class="list__title">{a.data.title}</span>
             <span class="list__lead">{a.data.lead}</span>

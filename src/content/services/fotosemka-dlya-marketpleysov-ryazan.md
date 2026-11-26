@@ -7,9 +7,6 @@ lead: 'Фото для карточек Wildberries, Ozon и Яндекс Мар
 city: Рязань
 parent: fotosemka-dlya-marketpleysov
 order: 90
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-5.jpg
-  alt: 'Фотосъёмка товаров для маркетплейсов в Рязани'
 faq:
   - q: 'Можно ли передать товар, если я не в Рязани?'
     a: 'Да, продавцы из Рязанской области и других городов отправляют товар транспортной компанией. После съёмки я возвращаю его тем же способом за ваш счёт.'

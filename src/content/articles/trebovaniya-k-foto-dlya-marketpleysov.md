@@ -4,9 +4,6 @@ seoTitle: 'Требования к фото для Wildberries и Ozon — па�
 description: 'Какие фото нужны для карточки Wildberries и Ozon: пропорции 3:4, главное фото, количество кадров, фон, инфографика, частые ошибки. Памятка от предметного фотографа.'
 lead: 'Разбираю, из чего состоит набор фото для карточки, какие технические требования стоит учесть и какие ошибки чаще всего мешают продажам.'
 date: 2026-10-22
-cover:
-  src: ../../assets/services/predmetnaya-semka/predmetnaya-semka-8.jpg
-  alt: 'Фото товара для карточки маркетплейса'
 services: ['fotosemka-dlya-marketpleysov', 'fotosemka-dlya-wildberries', 'fotosemka-dlya-ozon', 'fotosemka-dlya-marketpleysov-ryazan', 'fotosemka-dlya-marketpleysov-moskva']
 faq:
   - q: 'Можно использовать одни фото для Wildberries и Ozon?'

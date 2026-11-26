@@ -7,7 +7,7 @@ const services = await getMainServices();
   {services.map((s) => (
     <li>
       <a href={`/${s.id}/`}>
-        <Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[500, 800]} sizes="(max-width: 700px) 100vw, 33vw" />
+        {s.data.cover && <Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[500, 800]} sizes="(max-width: 700px) 100vw, 33vw" />}
         <h3>{s.data.title}</h3>
         <p class="price">{formatPrice(s.data.price)}{s.data.price ? ` / ${s.data.priceUnit}` : ''}</p>
         <p class="lead">{s.data.lead}</p>

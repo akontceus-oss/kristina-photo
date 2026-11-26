@@ -68,10 +68,10 @@ const nodes: Record<string, unknown>[] = [
 ];
 if (d.faq.length) nodes.push(faqSchema(d.faq));
 ---
-<BaseLayout title={d.seoTitle} description={d.description} image={d.cover.src} schema={graph(...nodes)} noindex={d.draft}>
+<BaseLayout title={d.seoTitle} description={d.description} image={d.cover?.src} schema={graph(...nodes)} noindex={d.draft}>
   <article>
-    <header class="hero">
-      <Image src={d.cover.src} alt={d.cover.alt} widths={[800, 1400, 2000]} sizes="(max-width: 900px) 100vw, calc(100vw - 300px)" loading="eager" fetchpriority="high" />
+    <header class:list={['hero', { 'hero--plain': !d.cover }]}>
+      {d.cover && <Image src={d.cover.src} alt={d.cover.alt} widths={[800, 1400, 2000]} sizes="(max-width: 900px) 100vw, calc(100vw - 300px)" loading="eager" fetchpriority="high" />}
       <div class="hero__text">
         <nav class="crumbs" aria-label="Хлебные крошки">
           <a href="/">Главная</a> / {crumbs.slice(0, -1).map((c) => <><a href={c.path}>{c.name}</a> / </>)}<span>{d.title}</span>
@@ -147,6 +147,8 @@ if (d.faq.length) nodes.push(faqSchema(d.faq));
 <style>
   .hero { position: relative; height: 78vh; min-height: 460px; overflow: hidden; }
   .hero :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  /* Страница без обложки: тёмная плашка вместо фото */
+  .hero--plain { height: auto; min-height: 380px; background: #2b2724; }
   .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0) 60%); }
   .hero__text { position: absolute; left: 4rem; right: 2rem; bottom: 3rem; color: #fff; z-index: 1; max-width: 680px; }
   .hero__text h1 { margin: .5rem 0 .75rem; }

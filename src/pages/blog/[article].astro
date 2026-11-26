@@ -37,13 +37,13 @@ const nodes: Record<string, unknown>[] = [
 ];
 if (d.faq.length) nodes.push(faqSchema(d.faq));
 ---
-<BaseLayout title={d.seoTitle} description={d.description} image={d.cover.src} type="article" schema={graph(...nodes)} noindex={d.draft}>
+<BaseLayout title={d.seoTitle} description={d.description} image={d.cover?.src} type="article" schema={graph(...nodes)} noindex={d.draft}>
   <article class="page page--narrow">
     <nav class="crumbs" aria-label="Хлебные крошки"><a href="/">Главная</a> / <a href="/blog/">Статьи</a> / <span>{d.title}</span></nav>
     <h1>{d.title}</h1>
     <p class="meta"><time datetime={d.date.toISOString()}>{formatDate(d.date)}</time> · {SITE.role} {SITE.fullName}</p>
     <p class="lead">{d.lead}</p>
-    <Image class="cover" src={d.cover.src} alt={d.cover.alt} widths={[800, 1200]} sizes="(max-width: 900px) 100vw, 820px" loading="eager" />
+    {d.cover && <Image class="cover" src={d.cover.src} alt={d.cover.alt} widths={[800, 1200]} sizes="(max-width: 900px) 100vw, 820px" loading="eager" />}
     <div class="prose"><Content /></div>
 
     {d.faq.length > 0 && (

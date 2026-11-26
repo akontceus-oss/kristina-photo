@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { graph, breadcrumbs } from '../lib/schema';
+import { REVIEWS } from '../config/reviews';
+---
+<BaseLayout
+  title="Отзывы клиентов — фотограф Кристина"
+  description="Отзывы ресторанов, кафе и брендов о съёмке меню, предметной и репортажной съёмке. Москва и Рязань."
+  schema={graph(breadcrumbs([{ name: 'Отзывы', path: '/otzyvy/' }]))}
+>
+  <div class="page">
+    <h1>Отзывы</h1>
+    {REVIEWS.length > 0 ? (
+      <div class="reviews__list">
+        {REVIEWS.map((r) => (
+          <figure>
+            <blockquote>{r.text}</blockquote>
+            <figcaption>{r.name}{r.company && <span>, {r.company}</span>}</figcaption>
+          </figure>
+        ))}
+      </div>
+    ) : (
+      <p class="reviews__empty">Скоро здесь появятся отзывы клиентов.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .reviews__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+  .reviews__list figure { margin: 0; padding: 1.75rem; border: 1px solid var(--line); }
+  .reviews__list blockquote { margin: 0 0 1rem; font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.5; }
+  .reviews__list figcaption { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  .reviews__list figcaption span { text-transform: none; letter-spacing: 0; }
+  .reviews__empty { color: var(--muted); }
+</style>
